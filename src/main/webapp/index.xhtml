@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"> 
+
+<h:head></h:head> 
+<body> 
+	<h:form>
+		<h:panelGrid columns="3" >
+			<p:outputLabel for="numer" value="Numer Zlecenia"/>
+			<p:inputText id="numer" value="#{zlecenieController.zlecenie.numer}"/>
+			<p:message for="numer"/>
+				
+			<p:outputLabel value="Imie" for="imie"></p:outputLabel>
+			<p:inputText id="imie" value="#{zlecenieController.zlecenie.imie}"/>
+			<p:message for="imie"/>	
+			
+			<p:outputLabel value="Nazwisko" for="nazwisko"></p:outputLabel>
+			<p:inputText id="nazwisko" value="#{zlecenieController.zlecenie.nazwisko}"/>
+			<p:message for="nazwisko"/>	
+			
+			<p:outputLabel value="Mail" for="mail"></p:outputLabel>
+			<p:inputText id="mail" value="#{zlecenieController.zlecenie.mail}"/>
+			<p:message for="mail"/>	
+		</h:panelGrid>
+		<p:commandButton id="insert" ajax="@form" action="#{zlecenieController.createZlecenie()}" value="Utwórz zlecenie"/>
+	</h:form>
+</body> 
+</html>
