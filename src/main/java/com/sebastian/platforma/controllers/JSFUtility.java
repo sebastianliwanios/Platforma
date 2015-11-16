@@ -1,5 +1,6 @@
 package com.sebastian.platforma.controllers;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
 import org.springframework.context.ApplicationContext;
@@ -16,5 +17,10 @@ public class JSFUtility {
 		ApplicationContext ctx = FacesContextUtils.getWebApplicationContext(FacesContext.getCurrentInstance());
 		return ctx.getBean(clazz);
 		
+	}
+	
+	public static void addGlobalMessage(FacesMessage.Severity severity,String message)
+	{
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severity, message,message ));
 	}
 }

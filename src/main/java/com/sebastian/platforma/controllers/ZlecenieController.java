@@ -16,6 +16,7 @@ import org.springframework.web.jsf.FacesContextUtils;
 import com.sebastian.platforma.dao.IZlecenieDAO;
 import com.sebastian.platforma.domain.Zlecenie;
 import com.sebastian.platforma.services.IZlecenieService;
+import com.sebastian.platforma.services.ServiceException;
 import com.sebastian.platforma.services.ZlecenieServiceImpl;
 
 @ManagedBean
@@ -38,8 +39,14 @@ public class ZlecenieController implements Serializable{
 	
 	public String createZlecenie() {
 		logger.debug("tworzę zlecenie");
-		getZlecenieService().dodajZlecenie(zlecenie);
-		zlecenie = new Zlecenie();
+		try
+		{
+			getZlecenieService().utworz(zlecenie);
+			zlecenie = new Zlecenie();
+		}catch(ServiceException e)
+		{
+			logger.error("Blad klasy biznesowej",e);
+		}
 		return null;
 	}
 	

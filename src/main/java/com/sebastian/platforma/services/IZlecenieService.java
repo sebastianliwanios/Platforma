@@ -2,8 +2,7 @@ package com.sebastian.platforma.services;
 
 import com.sebastian.platforma.domain.Zlecenie;
 
-public interface IZlecenieService {
+public interface IZlecenieService extends ICRUDService<Zlecenie, Integer> {
 	
-	public Zlecenie dodajZlecenie(Zlecenie zlecenie);
-	public void usunZlecenie(String numer);
+	
 }
