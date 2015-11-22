@@ -4,8 +4,9 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.sebastian.platforma.services.IBaseService;
+import com.sebastian.platforma.services.ICRUDService;
 
-public abstract class AbstractListController<T extends Serializable,K extends Serializable,S extends IBaseService<T, K>> extends AbstractController {
+public abstract class AbstractListController<T extends Serializable,K extends Serializable,S extends ICRUDService<T, K>> extends AbstractController {
 
 	private transient S service;
 	private Class<S> serviceClass;

@@ -1,6 +1,7 @@
 package com.sebastian.platforma.domain;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -57,6 +59,10 @@ public class Zlecenie implements Serializable{
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dataWyslania;
+	
+	@NotNull
+	@Min(value=1)
+	private BigDecimal stawka;
 	
 	@Column
 	@NotNull(message="Pole nie moze być puste")
@@ -103,6 +109,7 @@ public class Zlecenie implements Serializable{
 				.append("dataWyslania", dataWyslania).append("alias", alias)
 				.append("opis", opis).append("dokumentacja", dokumentacja)
 				.append("status", status)
+				.append("stawka", stawka)
 				.toString();
 	}
 
@@ -200,6 +207,14 @@ public class Zlecenie implements Serializable{
 
 	public void setStatus(StatusZlecenia status) {
 		this.status = status;
+	}
+
+	public BigDecimal getStawka() {
+		return stawka;
+	}
+
+	public void setStawka(BigDecimal stawka) {
+		this.stawka = stawka;
 	}
 	
 	

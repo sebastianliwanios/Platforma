@@ -10,16 +10,29 @@ import com.sebastian.platforma.domain.Zlecenie;
 @Service
 @Transactional
 public class ZlecenieServiceImpl extends AbstractCRUDService<Zlecenie, Integer> implements IZlecenieService {
-
+	/*
 	@Override
 	public void preUtworz() throws ServiceException {
-		// TODO Auto-generated method stub
 		throw new ServiceException("zlecenieUnikatowyNumer");
 	}
+	*/
+	
 
 	@Override
+	public Zlecenie zapisz(Zlecenie encja) throws ServiceException {
+		
+		//sprawdzenie numeru w bazie
+		//wyslanie maila
+		Zlecenie z=dao.save(encja);
+		//wyslanie maila
+		return z;
+	}
+
+
+	/*
+	@Override
 	public void preZapisz() throws ServiceException {
-		// TODO Auto-generated method stub
 		
 	}
+	*/
 }

@@ -13,5 +13,5 @@ public interface IBaseService<T extends Serializable,K extends Serializable> {
 
 	public T zanjdzPoID(K id);
 	public List<T> znajdzWszystkie();
-	public T aktualizuj(T obj);
+	public T aktualizuj(T obj);//pobierz ponownie 
 }

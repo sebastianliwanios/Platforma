@@ -1,0 +1,19 @@
+@CHARSET "UTF-8";
+
+	#header {
+		background-color: gray;
+		text-align: center;
+	}
+	
+	#nav {
+		float: left;
+		padding: 5px;
+	}
+	
+	#footer {
+		background-color: black;
+		text-align: center;
+		color: white;
+		clear: both;
+		padding: 5px;
+	}

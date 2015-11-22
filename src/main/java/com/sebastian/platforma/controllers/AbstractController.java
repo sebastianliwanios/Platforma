@@ -4,7 +4,7 @@ import java.util.ResourceBundle;
 
 import javax.faces.application.FacesMessage;
 
-import org.omnifaces.util.Faces;
+
 
 import com.sebastian.platforma.services.ServiceException;
 /**
@@ -17,7 +17,7 @@ public abstract class AbstractController {
 	protected void handleMessage(ServiceException e)
 	{
 		String errorCode=e.getErrorCode();
-		ResourceBundle bundle=Faces.getResourceBundle("serviceMessage");
+		ResourceBundle bundle=JSFUtility.getResourceBundle("serviceMessage");
 		JSFUtility.addGlobalMessage(FacesMessage.SEVERITY_ERROR, bundle.getString(errorCode));
 	}
 }

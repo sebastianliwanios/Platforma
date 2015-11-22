@@ -1,10 +1,14 @@
 package com.sebastian.platforma.controllers;
 
+import java.util.ResourceBundle;
+
+import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.jsf.FacesContextUtils;
+
 
 public class JSFUtility {
 
@@ -22,5 +26,27 @@ public class JSFUtility {
 	public static void addGlobalMessage(FacesMessage.Severity severity,String message)
 	{
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severity, message,message ));
+	}
+	
+	public static ResourceBundle getResourceBundle(String var)
+	{
+		//FacesContext.getCurrentInstance().getApplication().ev
+		FacesContext context=FacesContext.getCurrentInstance();
+		Application application=context.getApplication();
+		
+		return (ResourceBundle)application.getResourceBundle(context, var);
+	}
+	//#{session}
+	public static Object getExpression(String expression)
+	{
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+		StringBuilder builder=new StringBuilder();
+		builder.append("#");
+		builder.append("{");
+		builder.append(expression);
+		builder.append("}");
+		
+		return context.getApplication().evaluateExpressionGet(context, builder.toString(), Object.class);
 	}
 }

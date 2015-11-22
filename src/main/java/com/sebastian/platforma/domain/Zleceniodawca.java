@@ -22,7 +22,10 @@ public class Zleceniodawca implements Serializable{
 	private Short id;
 	
 	@NotNull
-	@Size(max=25, message="Nazwa powinna zawierać max {max} znaków")
+	@Size.List({
+		@Size(max=25, message="Nazwa powinna zawierać max {max} znaków"),
+		@Size(min=1, message="Nazwa powinna zawierać min {min} znak")
+	}) 
 	private String nazwa;
 	
 	@Size(max=100, message="Opis powinien zawierać do {max} znaków")

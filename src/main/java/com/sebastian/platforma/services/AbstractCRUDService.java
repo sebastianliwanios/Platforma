@@ -8,19 +8,21 @@ public abstract class AbstractCRUDService<T extends Serializable,K extends Seria
 {
 
 	@Override
+	@Transactional
 	public T utworz(T encja) throws ServiceException {
 		
-		preUtworz();
+		//preUtworz();
 		return dao.save(encja);
 	}
 	
-	public abstract void preUtworz() throws ServiceException;
-	public abstract void preZapisz() throws ServiceException;
+	//public abstract void preUtworz() throws ServiceException;
+	//public abstract void preZapisz() throws ServiceException;
 
 	@Override
+	@Transactional
 	public T zapisz(T encja) throws ServiceException {
 		
-		preZapisz();
+		//preZapisz();
 		return dao.save(encja);
 	}
 

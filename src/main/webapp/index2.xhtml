@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">  
+
+<h:head>
+	<h:outputStylesheet library="css" name="style.css"/>
+</h:head> 
+<body> 
+	<div id="header">
+		<h:outputText value="Platforma" />
+	</div>
+	<div id="nav">
+		<h:form>
+			<h:panelGrid columns="2">
+			<p:commandButton id="Zaloguj" ajax="true" update="@form" value="Zaloguj" />
+			
+			<p:commandButton id="Zarejestruj" ajax="true" update="@form" value="Zarejestruj" />
+			</h:panelGrid>
+		</h:form>
+	</div>
+	<div id="footer">
+		<h:outputText value="Copyright 2015 @ Sebastian Liwanios" />
+	</div>
+	
+</body> 
+</html>
