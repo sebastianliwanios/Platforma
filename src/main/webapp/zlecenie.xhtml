@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"> 
+
+<h:head></h:head> 
+<body> 
+	<h:form id="ZlecenieForm">
+		<p:messages globalOnly="true" />
+		<h3 style="text-align: center;"><h:outputText value="Lista zleceń" /></h3>
+		
+		<p:toolbar id="toolbar">
+			<f:facet name="left">
+				<p:commandButton value="Nowy" icon="ui-icon-document" onclick="PF('nowy').show();" ajax="true" action="#{zlecenieListaController.initNowy}" update=":DialogForm"/>
+				<p:commandButton value="Edycja" icon="ui-icon-pencil" onclick="PF('nowy').show();" ajax="true" action="#{zlecenieListaController.initEdycja}" update=":DialogForm" disabled="#{zlecenieListaController.obiekt==null}"/>
+				<p:commandButton value="Wyświetl" icon="ui-icon-search" onclick="PF('nowy').show();" ajax="true" action="#{zlecenieListaController.initWyswietl}" update=":DialogForm" disabled="#{zlecenieListaController.obiekt==null}"/>
+				<p:commandButton value="Usuń" icon="ui-icon-trash" ajax="true" action="#{zlecenieListaController.remove}" update="@form" disabled="#{zlecenieListaController.obiekt==null}"/>
+			</f:facet>
+		</p:toolbar>
+		<p:dataTable style="width:50%; margin:0 auto" id="zlecenieLista" value="#{zlecenieListaController.list}" var="zlecenie" selectionMode="single" selection="#{zlecenieListaController.obiekt}" rowKey="#{zlecenie.id}">	
+		
+		</p:dataTable>
+	
+	</h:form>
+		
+		<p:dialog widgetVar="nowy" height="500" width="1000" header="Zlecenie" modal="true" showEffect="puff" hideEffect="clip">
+		<h:form id="DialogForm">
+			<h:inputHidden value="#{zlecenieListaController.sukces}" id="operacja" />
+			<table style="font-size: 11px;" width="100%" cellpadding="5" cellspacing="5" border="0" >
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td colspan="2">
+						<p:outputLabel value="Data otrzymania"></p:outputLabel>
+					</td>
+					
+					<td colspan="2">
+						<p:calendar value="#{zlecenieListaController.obiekt.dataOtrzymania}"/>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2"><p:outputLabel value="ID zlecenia"/></td>
+					
+					<td><p:inputText/></td>
+					<td><p:outputLabel value="Status"/></td>
+					<td><p:inputText/></td>
+					<td><p:outputLabel value="Ściezka"/></td>
+					<td colspan="2"><p:inputText readonly="true"/></td>
+					
+					<td colspan="2">
+						<p:outputLabel value="Data wykonania"></p:outputLabel>
+					</td>
+					
+					<td colspan="2">
+						<p:calendar> </p:calendar>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td colspan="2">
+						<p:outputLabel value="Data wysłania"></p:outputLabel>
+					</td>
+					
+					<td colspan="2">
+						<p:calendar value="#{zlecenieListaController.obiekt.dataWyslania}"/>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="12"/>
+				</tr>
+				<tr>
+					<td colspan="2"><p:outputLabel value="Numer zlecenia"/> </td>
+					<td colspan="2"><p:inputText value="#{zlecenieListaController.obiekt.numerZlecenia}" /> </td>
+					
+					<td colspan="2"><p:outputLabel value="Ubezpieczyciel"/> </td>
+					<td colspan="2"><p:inputText value="#{zlecenieListaController.obiekt.ubezpieczyciel}"/> </td>
+					
+					<td colspan="2"><p:outputLabel value="Alias"/> </td>
+					<td colspan="2"><p:inputText value="#{zlecenieListaController.obiekt.alias}"/> </td>
+				</tr>
+				<tr>
+					<td colspan="2"><p:outputLabel value="Zleceniodawca"/> </td>
+					<td colspan="2"><p:inputText value="#{zlecenieListaController.obiekt.zleceniodawca}" /> </td>
+					
+					<td colspan="2"><p:outputLabel value="Mail"/> </td>
+					<td colspan="2"><p:inputText value="#{zlecenieListaController.obiekt.mail}"/> </td>
+					
+					<td colspan="2"><p:outputLabel value="Stawka"/> </td>
+					<td colspan="2"><p:inputText value="#{zlecenieListaController.obiekt.stawka}"/> </td>
+				</tr>
+				<tr>
+					<td colspan="2"><p:outputLabel value="Opis"/> </td>
+					<td colspan="10"><p:inputTextarea autoResize="true" value="#{zlecenieListaController.obiekt.opis}"/>  </td>
+				</tr>
+				<tr>
+					<td colspan="12"/>
+				</tr>
+				<tr>
+					<td colspan="5"></td>
+					<td colspan="2"><p:outputLabel value="Dokumentacja"/> </td>
+					<td colspan="5"></td>
+				</tr>
+			</table>
+			<h:panelGrid columns="2">
+				<p:commandButton id="dodaj" value="Zatwierdź" ajax="true" action="#{zlecenieListaController.create}" update="@form :ZlecenieForm:zlecenieLista" rendered="#{zlecenieListaController.dodawanie}" oncomplete=" if(document.getElementById('DialogForm:operacja').value=='true'){PF('nowy').hide();};"> </p:commandButton>
+				<p:commandButton id="zapisz" value="Zapisz" ajax="true" action="#{zlecenieListaController.save}" update="@form :ZlecenieForm:zlecenieLista" rendered="#{zlecenieListaController.dodawanie}" oncomplete=" if(document.getElementById('DialogForm:operacja').value=='true'){PF('nowy').hide();};"> </p:commandButton>
+				<p:commandButton value="Zapisz" action="#{zlecenieListaController.save}" update=":ZlecenieForm @form" rendered="#{zlecenieListaController.edycja}" oncomplete="if(document.getElementById('DialogForm:operacja').value=='true'){PF('nowy').hide();};"/>
+    			<p:commandButton value="Zamknij" onclick="PF('nowy').hide();return false;" rendered="#{zlecenieListaController.wyswietlanie}"/>
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+</body> 
+</html>

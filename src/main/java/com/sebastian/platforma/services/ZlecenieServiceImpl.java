@@ -16,9 +16,8 @@ public class ZlecenieServiceImpl extends AbstractCRUDService<Zlecenie, Integer> 
 		throw new ServiceException("zlecenieUnikatowyNumer");
 	}
 	*/
-	
 
-	@Override
+	/*@Override
 	public Zlecenie zapisz(Zlecenie encja) throws ServiceException {
 		
 		//sprawdzenie numeru w bazie
@@ -26,7 +25,7 @@ public class ZlecenieServiceImpl extends AbstractCRUDService<Zlecenie, Integer> 
 		Zlecenie z=dao.save(encja);
 		//wyslanie maila
 		return z;
-	}
+	}*/
 
 
 	/*

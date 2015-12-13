@@ -31,6 +31,7 @@ public class JSFUtility {
 	public static ResourceBundle getResourceBundle(String var)
 	{
 		//FacesContext.getCurrentInstance().getApplication().ev
+		// odwoluje sie do danego pliku zarejestrowanego w faces-config.xml (resourceBundle)
 		FacesContext context=FacesContext.getCurrentInstance();
 		Application application=context.getApplication();
 		
