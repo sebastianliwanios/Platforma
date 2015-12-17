@@ -9,8 +9,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -41,6 +43,9 @@ public class Dokumentacja implements Serializable{
 	
 	@Size(max=100)
 	private String opis;
+	
+	@Transient
+	private boolean tymczasowy;
 	
 	public Dokumentacja() {}
 
@@ -104,6 +109,14 @@ public class Dokumentacja implements Serializable{
 
 	public void setOpis(String opis) {
 		this.opis = opis;
+	}
+
+	public boolean isTymczasowy() {
+		return tymczasowy;
+	}
+
+	public void setTymczasowy(boolean tymczasowy) {
+		this.tymczasowy = tymczasowy;
 	}
 	
 	

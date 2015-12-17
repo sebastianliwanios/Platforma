@@ -12,13 +12,37 @@
 	<div id="header">
 		<h:outputText value="Platforma" />
 	</div>
+	<div id="navigation">
+		<table width="100%" border="1" cellpadding="5" cellspacing="5">
+			<tr>
+				<td align="right">
+					<a href="zlecenie.xhtml"><h:outputText value="Zlecenia" /></a>
+				</td>
+				<td align="center">
+					<a href="zleceniodawca.xhtml"><h:outputText value="Zleceniodawcy" /></a>
+				</td>
+				<td align="left">
+					<a href="ubezpieczyciel.xhtml"><h:outputText value="Ubezpieczyciele" /></a>
+				</td>
+			</tr>
+		</table>
+	</div>
 	<div id="nav">
-		<h:form>
-			<h:panelGrid columns="2">
-			<p:commandButton id="Zaloguj" ajax="true" update="@form" value="Zaloguj" />
-			
-			<p:commandButton id="Zarejestruj" ajax="true" update="@form" value="Zarejestruj" />
-			</h:panelGrid>
+		<h:form id="navForm">
+			<table width="100%" border="1" cellpadding="5" cellspacing="5">
+				<tr>
+					<td></td>
+					<td></td>
+					<td align="right">
+						<p:commandButton id="Zaloguj" ajax="true" update="@form" value="Zaloguj" />
+					</td>
+					<td align="left">
+						<p:commandButton id="Zarejestruj" ajax="true" update="@form" value="Zarejestruj" />
+					</td>
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
 		</h:form>
 	</div>
 	<div id="footer">

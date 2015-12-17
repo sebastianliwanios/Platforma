@@ -8,6 +8,14 @@
 	#nav {
 		float: left;
 		padding: 5px;
+		font-size: 11px;
+		text-align: center;
+	}
+	
+	#navigation {
+		float: center;
+		text-align: center;
+		font-weight: bold;
 	}
 	
 	#footer {

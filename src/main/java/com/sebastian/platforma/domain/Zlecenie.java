@@ -2,12 +2,15 @@ package com.sebastian.platforma.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -41,6 +45,10 @@ public class Zlecenie implements Serializable{
 	@NotNull(message="Pole nie moze być puste")
 	@Size(max=15, message="Numer nie moze być większy od {max} cyfr")
 	private String numerZlecenia;
+	
+	@NotNull
+	@Size(max=512, message="Przekroczono dopuszczalny rozmiar ściezki")
+	private String sciezka;
 	
 	@ManyToOne
 	@NotNull(message="Ubezpieczyciel jest wymagany")
@@ -79,8 +87,11 @@ public class Zlecenie implements Serializable{
 	private List<Dokumentacja> dokumentacja;
 	
 	@NotNull
-	@ManyToOne
+	@Enumerated(EnumType.STRING)
 	private StatusZlecenia status;
+	
+	@Transient //nie zapisuje tego do bazy danych
+	private List<Plik> plikiTymczasowe;
 
 	public Zlecenie() {}
 
@@ -110,7 +121,24 @@ public class Zlecenie implements Serializable{
 				.append("opis", opis).append("dokumentacja", dokumentacja)
 				.append("status", status)
 				.append("stawka", stawka)
+				.append("sciezka", sciezka)
 				.toString();
+	}
+	
+	public void dodajDokument(Dokumentacja dok)
+	{
+		if(dokumentacja==null)
+			dokumentacja=new ArrayList<Dokumentacja>();
+		
+		dokumentacja.add(dok);
+	}
+
+	public String getSciezka() {
+		return sciezka;
+	}
+
+	public void setSciezka(String sciezka) {
+		this.sciezka = sciezka;
 	}
 
 	public Integer getId() {
@@ -216,6 +244,32 @@ public class Zlecenie implements Serializable{
 	public void setStawka(BigDecimal stawka) {
 		this.stawka = stawka;
 	}
+	
+	public int getStatusEnum()
+	{
+		if(status==null)
+			return 0;
+		else
+			return status.ordinal();
+	}
+	
+	public void setStatusEnum(int ordinal)
+	{
+		System.out.println("Ordinal="+ordinal);
+		System.out.println(StatusZlecenia.values());
+		this.status=StatusZlecenia.values()[ordinal];
+		System.out.println(status);
+	}
+
+	public List<Plik> getPlikiTymczasowe() {
+		
+		if(plikiTymczasowe==null)
+			plikiTymczasowe=new ArrayList<Plik>();
+		
+		return plikiTymczasowe;
+	}
+	
+	
 	
 	
 }
