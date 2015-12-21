@@ -7,52 +7,62 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
+import javax.faces.application.FacesMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sebastian.platforma.controllers.ZlecenieListaController;
+import com.sebastian.platforma.controllers.JSFUtility;
+import com.sebastian.platforma.dao.IZlecenieDAO;
 import com.sebastian.platforma.domain.Dokumentacja;
 import com.sebastian.platforma.domain.Zlecenie;
 
 @Service
-@Transactional
 public class ZlecenieServiceImpl extends AbstractCRUDService<Zlecenie, Integer> implements IZlecenieService {
 	
 	private static final Logger logger=LoggerFactory.getLogger(ZlecenieServiceImpl.class);
+	private Zlecenie zlecenie;
 	
+	@Autowired
+	private IZlecenieDAO zlecRepo;
 	
+	private static final String RESOURCE_BUNDLE_NAME="zlecenieMsg";
+	private static final String allNumerOfZlecenieMsg="allNumerOfZlecenieMsg";
+	
+	@Transactional
 	@Override
 	public Zlecenie utworz(Zlecenie zlecenie) throws ServiceException {
 		logger.debug("Utworz zlecenie");
 		//zmienic sciezke na podstawie numer zlecenia itp
 		
 		 // sciezka: C:\Platforma\miesiac+rok\zleceniodawca\nrzlecenia_ubezpieczyciel_alias
-		
-		
-		//!!!!!! Sprawdzic czy numer i zleceniodawce zlecenia juz istnieja jak tak to wyrzucic wyjatek
-		//Pobieramy liste zlecen po numerze zlecenia ktore chcemy dodac
-		//sprawdzamy czy lista jest pusta jak tak to ok jak nie to wyrzucamy wyjatek
-		//List<Zlecenie> findZlecenieByNumerAndByZlecenieNumer
-		// if (findZlecenieByNumerAndByZlecenieNumer.isEmpty) ok
-		ZlecenieRepository zlecRepo;
+	
 		//zlecRepo.findZlecenieByNumerZleceniaAndZleceniodawca(numerZlecenia, zleceniodawca)
 		
-		SimpleDateFormat format = new SimpleDateFormat("MM yy");
+		if (zlecRepo.findByNumerZlecenia(zlecenie.getNumerZlecenia()).isEmpty()) {
+			logger.debug("Nie odnaleziono tego samego numeru zlecenia");
+			}
+		else {
+			throw new ServiceException("zlecenieUnikatowyNumer");
+		}
+	
+		SimpleDateFormat format = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
 		
 		String sciezka = "C:"+File.separator+"Platforma"+File.separator+format.format(zlecenie.getDataOtrzymania())
 				+File.separator+zlecenie.getZleceniodawca().getNazwa()+File.separator+zlecenie.getNumerZlecenia()+"_"
 				+zlecenie.getUbezpieczyciel().getNazwa()+"_"+zlecenie.getAlias()+File.separator;
 		zlecenie.setSciezka(sciezka);
 		
-		for (Dokumentacja d:zlecenie.getDokumentacja()) {//d - sciezka-> c:tmp00123.tmp
-			File tymczasowy = new File(d.getSciezka());
-			File plikDocelowy = new File(sciezka+d.getNazwa());
-			plikDocelowy.mkdirs();
+		for (Dokumentacja d:zlecenie.getDokumentacja()) {//d - sciezka-> c:tmp00123.tmp, petla zapisuje wszystkie zaznaczone pliki
+			File tymczasowy = new File(d.getSciezka()); // tworzymy sciezke do plikow tymczasowych
+			File plikDocelowy = new File(sciezka+d.getNazwa()); // tworzymy sciezke do plikow docelowych
+			plikDocelowy.mkdirs(); // tworzymy folder w sciezce docelowej
 			try {
-				Files.copy(tymczasowy.toPath(), plikDocelowy.toPath(), StandardCopyOption.REPLACE_EXISTING);
+				Files.copy(tymczasowy.toPath(), plikDocelowy.toPath(), StandardCopyOption.REPLACE_EXISTING); // kopiujemy pliki z folderu tymczasowego do docelowego
 			} catch (IOException e) {
 				logger.error("Błąd kopiowania plików", e);
 				throw new ServiceException("BladKopiowaniaPlikow");
@@ -61,20 +71,18 @@ public class ZlecenieServiceImpl extends AbstractCRUDService<Zlecenie, Integer> 
 			if (resultat == false) {
 				logger.warn("Nie udało się usunąć pliku tymczasowego {}", tymczasowy.getPath());
 			}
-			d.setSciezka(sciezka+d.getNazwa());
+			d.setSciezka(sciezka+d.getNazwa()); // do kazdego dokumentu zapisujemy sciezke, ktora zostala utworzona
+			}
+		
+			return super.utworz(zlecenie);
 		}
 		
-	
-		
-		
-		//pobieramy pliki tymczasowe 
-		//1. Tworzymy pliki stale w sciezce zlecenia(kopiowanie plikow tymczasowych do plikow glownych)
-		//2. Tworzymy dla kazdego pliku obiekt klasy Dokumentacja
-		//3. 
-		//Files.copy(output,input)-> output plik docelowy, input plik tymczasowy
-		
-		return super.utworz(zlecenie);
-	}
+		@Transactional
+		@Override
+		public void usunPoID(Integer id) {
+			
+			super.usunPoID(id);
+		}
 	
 	
 	/*

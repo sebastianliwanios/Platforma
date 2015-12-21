@@ -19,6 +19,7 @@ import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.sebastian.platforma.domain.Dokumentacja;
 import com.sebastian.platforma.domain.Ubezpieczyciel;
@@ -33,6 +34,7 @@ import com.sebastian.platforma.services.IZleceniodawcaService;
 public class ZlecenieListaController extends AbstractListController<Zlecenie, Integer, IZlecenieService> {
 
 	private static final String RESOURCE_BUNDLE_NAME="zlecenieMsg";
+	private static final String allNumerOfZlecenieMsg="allNumerOfZlecenieMsg";
 	private static final Logger logger=LoggerFactory.getLogger(ZlecenieListaController.class);
 	
 	// konstruktor musi byc bezargumentowy
@@ -42,8 +44,9 @@ public class ZlecenieListaController extends AbstractListController<Zlecenie, In
 	}
 	@Override
 	public String initNowy() {
-		
+
 		super.initNowy();
+		
 		obiekt.setDataOtrzymania(new Date());
 		obiekt.setSciezka("C:"+File.separator+"Platforma"+File.separator);
 		return null;
@@ -60,8 +63,14 @@ public class ZlecenieListaController extends AbstractListController<Zlecenie, In
 		if (nazwaJuzIstnieje == false) {
 			return nazwaPliku;
 		}
-		for (int i=1; ; i++) {
-			String nowaNazwa = nazwaPliku+"("+i+")"; // + rozszerzenie
+		
+		for (int i=0; ; i++) {
+			String[] nazwy = nazwaPliku.split("\\."); // alternatywnie Pattern.quote(".")
+			String nowaNazwa = nazwy[0].concat(+i+"."+nazwy[1]);
+			logger.debug("Ilość indexów w nazwie: {}",nazwy.length);
+			logger.debug(nowaNazwa);
+			logger.debug("nazwa: {}", nazwy[0]);
+			logger.debug("Nowa nazwa dodanego pliku: {}", nowaNazwa);
 			nazwaJuzIstnieje = czyNazwaIstniejeNaLiscie(nowaNazwa);
 			if (nazwaJuzIstnieje == false) {
 				return nowaNazwa;
@@ -88,10 +97,10 @@ public class ZlecenieListaController extends AbstractListController<Zlecenie, In
 		{
 			File tempFile=File.createTempFile("platforma", ".tmp");
 			logger.trace("Utworzono plik tymczasowy {}",tempFile.getPath());
-			InputStream input=event.getFile().getInputstream();
+			InputStream input=event.getFile().getInputstream();  // zaznaczamy pliki do skopiowania do sciezki tymczasowej
 			try
 			{
-				Files.copy(input, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+				Files.copy(input, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING); // kopiujemy do sciezki tymczasowej
 			}
 			finally{
 				input.close();
@@ -135,5 +144,15 @@ public class ZlecenieListaController extends AbstractListController<Zlecenie, In
 	public List<Zleceniodawca> getZleceniodawcaLista() {
 		return JSFUtility.findService(IZleceniodawcaService.class).znajdzWszystkie();
 	}
+	
+	
+	@Override
+	public String remove() {
+		
+		return super.remove();
+	}
+	
+	
+	
 	
 }
