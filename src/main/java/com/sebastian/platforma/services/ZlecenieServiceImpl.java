@@ -25,13 +25,8 @@ import com.sebastian.platforma.domain.Zlecenie;
 public class ZlecenieServiceImpl extends AbstractCRUDService<Zlecenie, Integer> implements IZlecenieService {
 	
 	private static final Logger logger=LoggerFactory.getLogger(ZlecenieServiceImpl.class);
-	private Zlecenie zlecenie;
-	
 	@Autowired
 	private IZlecenieDAO zlecRepo;
-	
-	private static final String RESOURCE_BUNDLE_NAME="zlecenieMsg";
-	private static final String allNumerOfZlecenieMsg="allNumerOfZlecenieMsg";
 	
 	@Transactional
 	@Override
@@ -70,8 +65,8 @@ public class ZlecenieServiceImpl extends AbstractCRUDService<Zlecenie, Integer> 
 			boolean resultat = tymczasowy.delete();
 			if (resultat == false) {
 				logger.warn("Nie udało się usunąć pliku tymczasowego {}", tymczasowy.getPath());
-			}
-			d.setSciezka(sciezka+d.getNazwa()); // do kazdego dokumentu zapisujemy sciezke, ktora zostala utworzona
+				}
+				d.setSciezka(sciezka+d.getNazwa()); // do kazdego dokumentu zapisujemy sciezke, ktora zostala utworzona
 			}
 		
 			return super.utworz(zlecenie);
@@ -83,8 +78,14 @@ public class ZlecenieServiceImpl extends AbstractCRUDService<Zlecenie, Integer> 
 			
 			super.usunPoID(id);
 		}
+
+		@Override
+		public Zlecenie zapisz(Zlecenie encja) throws ServiceException {
+			
+			return super.zapisz(encja);
+		}
 	
-	
+		
 	/*
 	@Override
 	public void preUtworz() throws ServiceException {

@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 
 
+
 import com.sebastian.platforma.services.ICRUDService;
 import com.sebastian.platforma.services.ServiceException;
 
@@ -52,7 +53,7 @@ public abstract class AbstractListController<T extends Serializable,K extends Se
 			//refleksa
 			//String.class.newInstance();//newInstace() - tworzy nowa instacje za pomoca konstruktora no-args
 			obiekt=obiektClass.newInstance();
-			
+			logger.debug("Tworze nowy obiekt {}",obiekt);
 			sukces=false;             
 		}
 		 catch (IllegalAccessException e) {
@@ -120,6 +121,10 @@ public abstract class AbstractListController<T extends Serializable,K extends Se
 		return getService().znajdzWszystkie();
 	}
 	
+	public T getObiek(K id) {
+		return getService().zanjdzPoID(id);
+	}
+	
 	public S getService()
 	{
 		if(service==null)
@@ -151,10 +156,12 @@ public abstract class AbstractListController<T extends Serializable,K extends Se
 	}
 
 	public T getObiekt() {
+		logger.debug("GET obiekt {}",obiekt);
 		return obiekt;
 	}
 
 	public void setObiekt(T obiekt) {
+		logger.debug("SET obiekt {}",obiekt);
 		this.obiekt = obiekt;
 	}
 }

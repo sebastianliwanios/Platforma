@@ -68,6 +68,9 @@ public class Zlecenie implements Serializable{
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dataWyslania;
 	
+	@Temporal(TemporalType.DATE)
+	private Date dataModyfikacji;
+	
 	@NotNull
 	@Min(value=1)
 	private BigDecimal stawka;
@@ -83,7 +86,7 @@ public class Zlecenie implements Serializable{
 	@Size(max=200, message="Opis nie powinien zawierać więcej niz {max} znaków")
 	private String opis;
 	
-	@OneToMany(cascade=CascadeType.ALL,orphanRemoval=true, fetch=FetchType.LAZY) // stworzy dokumentacje i przypisze do zleenia, podczas usuwania skasuje wszystkie powiazania i dokumenty
+	@OneToMany(cascade=CascadeType.ALL,orphanRemoval=true, fetch=FetchType.EAGER) // stworzy dokumentacje i przypisze do zleenia, podczas usuwania skasuje wszystkie powiazania i dokumenty
 	private List<Dokumentacja> dokumentacja;
 	
 	@NotNull
@@ -122,6 +125,7 @@ public class Zlecenie implements Serializable{
 				.append("status", status)
 				.append("stawka", stawka)
 				.append("sciezka", sciezka)
+				.append("dataModyfikacji", dataModyfikacji)
 				.toString();
 	}
 	
@@ -267,6 +271,14 @@ public class Zlecenie implements Serializable{
 			plikiTymczasowe=new ArrayList<Plik>();
 		
 		return plikiTymczasowe;
+	}
+
+	public Date getDataModyfikacji() {
+		return dataModyfikacji;
+	}
+
+	public void setDataModyfikacji(Date dataModyfikacji) {
+		this.dataModyfikacji = dataModyfikacji;
 	}
 	
 	
