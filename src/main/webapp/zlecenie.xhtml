@@ -13,14 +13,14 @@
 		
 		<p:toolbar id="toolbar">
 			<f:facet name="left">
-				<p:commandButton value="Nowy" icon="ui-icon-document" onclick="PF('nowy').show();" ajax="true" action="#{zlecenieListaController.initNowy}" update=":DialogForm @form" immediate="true" process="@this" oncomplete="alert('complete')" />
-				<p:commandButton value="Edycja" icon="ui-icon-pencil" onclick="PF('nowy').show();" ajax="true" action="#{zlecenieListaController.initEdycja}" update=":DialogForm" immediate="true" disabled="#{zlecenieListaController.obiekt==null}"/>
-				<p:commandButton value="Wyświetl" icon="ui-icon-search" onclick="PF('nowy').show();" ajax="true" action="#{zlecenieListaController.initWyswietl}" update=":DialogForm" disabled="#{zlecenieListaController.obiekt==null}" immediate="true"/>
-				<p:commandButton value="Usuń" icon="ui-icon-trash" ajax="true" action="#{zlecenieListaController.remove()}" update="@form" /> 
+				<p:commandButton value="Nowy" icon="ui-icon-document" onclick="PF('nowy').show();" ajax="true" action="#{zlecenieListaController.initNowy}" update=":DialogForm @form" immediate="true" process="@this"  />
+				<p:commandButton value="Edycja" icon="ui-icon-pencil" onclick="PF('nowy').show();" ajax="true" action="#{zlecenieListaController.initEdycja}" update=":DialogForm" process="@this" disabled="#{zlecenieListaController.zaznaczony==null}"/>
+				<p:commandButton value="Wyświetl" icon="ui-icon-search" onclick="PF('nowy').show();" ajax="true" action="#{zlecenieListaController.initWyswietl}" update=":DialogForm" disabled="#{zlecenieListaController.zaznaczony==null}" immediate="true"/>
+				<p:commandButton value="Usuń" icon="ui-icon-trash" ajax="true" action="#{zlecenieListaController.remove()}" update="@form" disabled="#{zlecenieListaController.zaznaczony==null}" /> 
 
 			</f:facet>
 		</p:toolbar>
-		<p:dataTable style="width:75%; margin:0 auto" id="zlecenieLista" value="#{zlecenieListaController.list}" var="zlecenie" selectionMode="single" selection="#{zlecenieListaController.obiekt}" rowKey="#{zlecenie.id}">	
+		<p:dataTable style="width:75%; margin:0 auto" id="zlecenieLista" value="#{zlecenieListaController.list}" var="zlecenie" selectionMode="single" selection="#{zlecenieListaController.zaznaczony}" rowKey="#{zlecenie.id}">	
 			
 			<p:ajax event="rowSelect" update="ZlecenieForm:toolbar"/>
 			<p:ajax event="rowUnselect" update="ZlecenieForm:toolbar"/>
@@ -176,6 +176,17 @@
 								<li><h:commandLink value="#{dokumentacja.nazwa} - #{dokumentacja.sciezka}"></h:commandLink> <p:commandLink style="margin-left:10px" action="#{zlecenieListaController.usunDokument(dokumentacja.nazwa)}" value="Usuń" ajax="true" process="@this" update="DialogForm:pliki"/></li>
 							</ui:repeat>
 							</ul>
+							
+							<h:panelGrid columns="5" cellpadding="10" cellspacing="10">
+								<h:panelGrid columns="1">
+								<p:commandLink onclick="return false;">
+									<h:graphicImage name="folder_image.png" library="images"/>
+								</p:commandLink>
+								<h:outputText value="Liczba #{zlecenieListaController.imagesCount}" />
+								</h:panelGrid>
+							</h:panelGrid>
+							
+							
 						</h:panelGroup>
 					</td>
 				</tr>
@@ -185,7 +196,7 @@
 				<p:commandButton id="dodaj" value="Dodaj" ajax="true" action="#{zlecenieListaController.create}" update="@form :ZlecenieForm:zlecenieLista" rendered="#{zlecenieListaController.dodawanie}" oncomplete=" if(document.getElementById('DialogForm:operacja').value=='true'){PF('nowy').hide();};"> </p:commandButton>
 				<p:commandButton id="anuluj" value="Anuluj" ajax="true" rendered="#{zlecenieListaController.dodawanie}" onclick="PF('nowy').hide();" update=":ZlecenieForm" immediate="true"> </p:commandButton>
 				<p:commandButton value="Zapisz" action="#{zlecenieListaController.save}" update=":ZlecenieForm @form" rendered="#{zlecenieListaController.edycja}" oncomplete="if(document.getElementById('DialogForm:operacja').value=='true'){PF('nowy').hide();};"/>
-    			<p:commandButton value="Zamknij" onclick="PF('nowy').hide();" rendered="#{zlecenieListaController.wyswietlanie || zlecenieListaController.edycja}" update=":ZlecenieForm" immediate="true"/>
+    			<p:commandButton value="Zamknij" onclick="PF('nowy').hide();return false;" rendered="#{zlecenieListaController.wyswietlanie || zlecenieListaController.edycja}" />
 			</h:panelGrid>
 		</h:form>
 		

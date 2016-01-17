@@ -14,12 +14,12 @@
 		<p:toolbar id="toolbar">
 			<f:facet name="left">
 				<p:commandButton value="Nowy" icon="ui-icon-document" onclick="PF('nowy').show();" ajax="true" action="#{ubezpieczycielListaController.initNowy}" update=":DialogForm"/>
-				<p:commandButton value="Edycja" icon="ui-icon-pencil" onclick="PF('nowy').show();" ajax="true" action="#{ubezpieczycielListaController.initEdycja}" update=":DialogForm" disabled="#{ubezpieczycielListaController.obiekt==null}"/>
-				<p:commandButton value="Wyświetl" icon="ui-icon-search" onclick="PF('nowy').show();" ajax="true" action="#{ubezpieczycielListaController.initWyswietl}" update=":DialogForm" disabled="#{ubezpieczycielListaController.obiekt==null}"/>
-				<p:commandButton value="Usuń" icon="ui-icon-trash" ajax="true" action="#{ubezpieczycielListaController.remove}" update="@form" disabled="#{ubezpieczycielListaController.obiekt==null}"/>
+				<p:commandButton value="Edycja" icon="ui-icon-pencil" onclick="PF('nowy').show();" ajax="true" action="#{ubezpieczycielListaController.initEdycja}" update=":DialogForm" disabled="#{ubezpieczycielListaController.zaznaczony==null}"/>
+				<p:commandButton value="Wyświetl" icon="ui-icon-search" onclick="PF('nowy').show();" ajax="true" action="#{ubezpieczycielListaController.initWyswietl}" update=":DialogForm" disabled="#{ubezpieczycielListaController.zaznaczony==null}"/>
+				<p:commandButton value="Usuń" icon="ui-icon-trash" ajax="true" action="#{ubezpieczycielListaController.remove}" update="@form" disabled="#{ubezpieczycielListaController.zaznaczony==null}"/>
 			</f:facet>
 		</p:toolbar>
-		<p:dataTable style="width:50%; margin:0 auto" id="ubezpieczycielLista" value="#{ubezpieczycielListaController.list}" var="ubezpieczyciel" selectionMode="single" selection="#{ubezpieczycielListaController.obiekt}" rowKey="#{ubezpieczyciel.id}">
+		<p:dataTable style="width:50%; margin:0 auto" id="ubezpieczycielLista" value="#{ubezpieczycielListaController.list}" var="ubezpieczyciel" selectionMode="single" selection="#{ubezpieczycielListaController.zaznaczony}" rowKey="#{ubezpieczyciel.id}">
 			<p:ajax event="rowSelect" update="UbezpieczycielForm:toolbar"/>
 			<p:ajax event="rowUnselect" update="UbezpieczycielForm:toolbar"/>
 			<p:column headerText="id">

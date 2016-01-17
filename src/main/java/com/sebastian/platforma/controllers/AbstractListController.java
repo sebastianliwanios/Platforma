@@ -23,7 +23,9 @@ public abstract class AbstractListController<T extends Serializable,K extends Se
 	protected int tryb;
 	private Class<S> serviceClass;
 	
-	protected T obiekt;
+	
+	protected T zaznaczony;
+	protected T nowy;
 	protected Class<T> obiektClass;
 	
 	public static final int TRYB_DODAWANIE=0;
@@ -52,8 +54,8 @@ public abstract class AbstractListController<T extends Serializable,K extends Se
 			tryb=TRYB_DODAWANIE;
 			//refleksa
 			//String.class.newInstance();//newInstace() - tworzy nowa instacje za pomoca konstruktora no-args
-			obiekt=obiektClass.newInstance();
-			logger.debug("Tworze nowy obiekt {}",obiekt);
+			nowy=obiektClass.newInstance();
+			logger.debug("Tworze nowy obiekt {}",nowy);
 			sukces=false;             
 		}
 		 catch (IllegalAccessException e) {
@@ -66,6 +68,7 @@ public abstract class AbstractListController<T extends Serializable,K extends Se
 	
 	public String initEdycja()
 	{
+		logger.debug("initEdycja");
 		tryb=TRYB_EDYCJA;
 		setSukces(false);
 		return null;
@@ -73,6 +76,7 @@ public abstract class AbstractListController<T extends Serializable,K extends Se
 	
 	public String initWyswietl()
 	{
+		logger.debug("initWyswietlania");
 		tryb=TRYB_WYSWIETLANIE;
 		setSukces(false);
 		return null;
@@ -83,9 +87,9 @@ public abstract class AbstractListController<T extends Serializable,K extends Se
 		logger.debug("Create");
 		try {
 			
-			getService().utworz(obiekt);
+			getService().utworz(nowy);
 			setSukces(true);
-			obiekt=null;
+			nowy=null;
 			JSFUtility.addGlobalMessage(FacesMessage.SEVERITY_INFO,JSFUtility.getResourceBundle(resourceBundleName).getString(CREATE_MSG));
 		} catch (ServiceException e) {
 			handleMessage(e);
@@ -97,20 +101,20 @@ public abstract class AbstractListController<T extends Serializable,K extends Se
 	public String save()
 	{
 		try {
-			getService().zapisz(obiekt);
+			getService().zapisz(zaznaczony);
 			setSukces(true);
-			obiekt=null;
 			JSFUtility.addGlobalMessage(FacesMessage.SEVERITY_INFO,JSFUtility.getResourceBundle(resourceBundleName).getString(SAVE_MSG));
 		} catch (ServiceException e) {
 			handleMessage(e);
-			//e.printStackTrace();
+			
 		}
 		return null;
 	}
 	
 	public String remove()
 	{
-		getService().usun(obiekt);
+		getService().usun(zaznaczony);
+		zaznaczony=null;
 		JSFUtility.addGlobalMessage(FacesMessage.SEVERITY_INFO, JSFUtility.getResourceBundle(resourceBundleName).getString(REMOVE_MSG));
 		return null;
 		
@@ -156,12 +160,26 @@ public abstract class AbstractListController<T extends Serializable,K extends Se
 	}
 
 	public T getObiekt() {
-		logger.debug("GET obiekt {}",obiekt);
-		return obiekt;
+		
+		if(tryb==TRYB_DODAWANIE)
+		{
+			logger.debug("tryb dodawanie GET obiekt ={}",nowy);
+			return nowy;
+		}
+		else
+		{
+			logger.debug("inny tryb {}",zaznaczony);
+			return zaznaczony;
+		}
 	}
 
-	public void setObiekt(T obiekt) {
-		logger.debug("SET obiekt {}",obiekt);
-		this.obiekt = obiekt;
+	public T getZaznaczony() {
+		return zaznaczony;
 	}
+
+	public void setZaznaczony(T zaznaczony) {
+		this.zaznaczony = zaznaczony;
+	}
+	
+	
 }

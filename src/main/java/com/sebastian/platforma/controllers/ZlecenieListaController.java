@@ -1,10 +1,13 @@
 package com.sebastian.platforma.controllers;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +21,8 @@ import javax.faces.context.FacesContext;
 import javax.print.attribute.standard.Severity;
 
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +43,12 @@ public class ZlecenieListaController extends AbstractListController<Zlecenie, In
 	private static final String RESOURCE_BUNDLE_NAME="zlecenieMsg";
 	private static final String allNumerOfZlecenieMsg="allNumerOfZlecenieMsg";
 	private static final Logger logger=LoggerFactory.getLogger(ZlecenieListaController.class);
+	private List<StreamedContent> galeria;
+	private StreamedContent image;
 	
+	public List<StreamedContent> getGaleria() {
+		return galeria;
+	}
 	// konstruktor musi byc bezargumentowy
 	public ZlecenieListaController() {
 		super(Zlecenie.class, IZlecenieService.class, RESOURCE_BUNDLE_NAME);
@@ -49,8 +59,8 @@ public class ZlecenieListaController extends AbstractListController<Zlecenie, In
 
 		super.initNowy();
 		
-		obiekt.setDataOtrzymania(new Date());
-		obiekt.setSciezka("C:"+File.separator+"Platforma"+File.separator);
+		nowy.setDataOtrzymania(new Date());
+		nowy.setSciezka("C:"+File.separator+"Platforma"+File.separator);
 		return null;
 	}
 	
@@ -60,15 +70,15 @@ public class ZlecenieListaController extends AbstractListController<Zlecenie, In
 	public String initEdycja() {
 		
 		super.initEdycja();
-	
-		obiekt.setDataModyfikacji(new Date());
+		
+		zaznaczony.setDataModyfikacji(new Date());
+		
+		
 		return null;
 	}
-	//fileA
-	//fileA(1)
-	//fileA(2)
+	
 	public String zwrocUnikalnaNazwePliku(String nazwaPliku) {
-		if (obiekt.getDokumentacja() == null || obiekt.getDokumentacja().isEmpty()) {
+		if (getObiekt().getDokumentacja() == null || getObiekt().getDokumentacja().isEmpty()) {
 			logger.debug("Brak plikow w dokumentacji dodaje nowy {}",nazwaPliku);
 			return nazwaPliku;
 		}
@@ -103,7 +113,7 @@ public class ZlecenieListaController extends AbstractListController<Zlecenie, In
 	}
 	
 	private boolean czyNazwaIstniejeNaLiscie(String nowaNazwa) {
-		for(Dokumentacja d: obiekt.getDokumentacja()) {
+		for(Dokumentacja d: getObiekt().getDokumentacja()) {
 			if(d.getNazwa().equals(nowaNazwa)) {
 				logger.debug("Plik o naziwe {} juz istnieje",nowaNazwa);
 				return true;
@@ -136,7 +146,7 @@ public class ZlecenieListaController extends AbstractListController<Zlecenie, In
 			dokumentacja.setSciezka(tempFile.getAbsolutePath());
 			dokumentacja.setTymczasowy(true);
 			dokumentacja.setDataDodania(new Date());
-			this.obiekt.dodajDokument(dokumentacja);
+			this.getObiekt().dodajDokument(dokumentacja);
 		}
 		catch(IOException e)
 		{
@@ -148,7 +158,7 @@ public class ZlecenieListaController extends AbstractListController<Zlecenie, In
 	
 	public void usunDokument(String nazwaPliku)
 	{
-		Iterator<Dokumentacja> iter=this.obiekt.getDokumentacja().iterator();
+		Iterator<Dokumentacja> iter=this.getObiekt().getDokumentacja().iterator();
 		while(iter.hasNext())
 		{
 			Dokumentacja dok=iter.next();
@@ -175,8 +185,45 @@ public class ZlecenieListaController extends AbstractListController<Zlecenie, In
 		
 		return super.remove();
 	}
+	public StreamedContent getImage() {
+		return image;
+	}
 	
+	public List<Dokumentacja> getImages()
+	{
+		
+		return grupujDokumenty("jpg","png","gif","jpeg","bmp");
+	}
 	
+	public int getImagesCount()
+	{
+		return getImages().size();
+	}
+	
+	private List<Dokumentacja> grupujDokumenty(String...typy)
+	{
+		Zlecenie zlecenie=getObiekt();
+		if(zlecenie==null)
+			return new ArrayList<Dokumentacja>();
+		
+		List<Dokumentacja> dokumenty=zlecenie.getDokumentacja();
+		List<Dokumentacja> lista=new ArrayList<Dokumentacja>();
+		if(dokumenty==null||dokumenty.isEmpty())
+			return lista;
+		for(Dokumentacja dokument:dokumenty)
+		{
+			for(String typ:typy)
+			{
+				if(dokument.getNazwa().toLowerCase().endsWith(typ.toLowerCase()))
+				{
+					lista.add(dokument);
+					break;
+				}
+			}
+		}
+		
+		return lista;
+	}
 	
 	
 }

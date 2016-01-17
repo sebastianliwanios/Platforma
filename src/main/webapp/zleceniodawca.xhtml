@@ -15,12 +15,12 @@
 		<p:toolbar id="toolbar">
 			<f:facet name="left">
 				<p:commandButton  value="Nowy" icon="ui-icon-document" onclick="PF('nowy').show();" ajax="true"  action="#{zleceniodawcaListaController.initNowy}" update=":ZleceniodawcaForm"/>
-				<p:commandButton  value="Edycja" icon="ui-icon-pencil" onclick="PF('nowy').show();" ajax="true" action="#{zleceniodawcaListaController.initEdycja}" update=":ZleceniodawcaForm" disabled="#{zleceniodawcaListaController.obiekt==null}"/>
-				<p:commandButton  value="Wyświetl" icon="ui-icon-search" onclick="PF('nowy').show();" ajax="true" action="#{zleceniodawcaListaController.initWyswietl}" update=":ZleceniodawcaForm" disabled="#{zleceniodawcaListaController.obiekt==null}"/>
-				<p:commandButton  value="Usuń" icon="ui-icon-trash" action="#{zleceniodawcaListaController.remove}" update="@form" disabled="#{zleceniodawcaListaController.obiekt==null}"/>
+				<p:commandButton  value="Edycja" icon="ui-icon-pencil" onclick="PF('nowy').show();" ajax="true" action="#{zleceniodawcaListaController.initEdycja}" update=":ZleceniodawcaForm" disabled="#{zleceniodawcaListaController.zaznaczony==null}"/>
+				<p:commandButton  value="Wyświetl" icon="ui-icon-search" onclick="PF('nowy').show();" ajax="true" action="#{zleceniodawcaListaController.initWyswietl}" update=":ZleceniodawcaForm" disabled="#{zleceniodawcaListaController.zaznaczony==null}"/>
+				<p:commandButton  value="Usuń" icon="ui-icon-trash" action="#{zleceniodawcaListaController.remove}" update="@form" disabled="#{zleceniodawcaListaController.zaznaczony==null}"/>
 			</f:facet>	
 		</p:toolbar>
-		<p:dataTable id="zleceniodawcaLista" value="#{zleceniodawcaListaController.list}" var="zleceniodawca" selectionMode="single" selection="#{zleceniodawcaListaController.obiekt}" rowKey="#{zleceniodawca.id}" style="margin-top: 10px;">
+		<p:dataTable id="zleceniodawcaLista" value="#{zleceniodawcaListaController.list}" var="zleceniodawca" selectionMode="single" selection="#{zleceniodawcaListaController.zaznaczony}" rowKey="#{zleceniodawca.id}" style="margin-top: 10px;">
 			<p:ajax event="rowSelect"  update="ZleceniodawcaListaForm:toolbar" /> <ui:remove><!-- po wybraniu wiersza odświeza sie forularz a dokladnie toolbar --></ui:remove>
         	<p:ajax event="rowUnselect"  update="ZleceniodawcaListaForm:toolbar" />
 			<p:column headerText="id" >
