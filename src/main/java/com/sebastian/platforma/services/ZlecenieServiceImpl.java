@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sebastian.platforma.controllers.JSFUtility;
+import com.sebastian.platforma.dao.IDokumentacjaDAO;
 import com.sebastian.platforma.dao.IZlecenieDAO;
 import com.sebastian.platforma.domain.Dokumentacja;
 import com.sebastian.platforma.domain.Zlecenie;
@@ -35,6 +36,9 @@ public class ZlecenieServiceImpl extends AbstractCRUDService<Zlecenie, Integer> 
 	private static final Logger logger=LoggerFactory.getLogger(ZlecenieServiceImpl.class);
 	@Autowired
 	private IZlecenieDAO zlecRepo;
+	
+	@Autowired
+	private IDokumentacjaDAO dokumentacjaDAO;
 	
 	@Transactional
 	@Override
@@ -58,78 +62,86 @@ public class ZlecenieServiceImpl extends AbstractCRUDService<Zlecenie, Integer> 
 		String sciezka = "C:"+File.separator+"Platforma"+File.separator+format.format(zlecenie.getDataOtrzymania())
 				+File.separator+zlecenie.getZleceniodawca().getNazwa()+File.separator+zlecenie.getNumerZlecenia()+"_"
 				+zlecenie.getUbezpieczyciel().getNazwa()+"_"+zlecenie.getAlias()+File.separator;
+		
+		File sciezkaFolder=new File(sciezka);
+		boolean rezultat=sciezkaFolder.mkdirs();
+		if(!rezultat)
+			logger.warn("Nie udało się utworzyć sciezki {}",sciezka);
 		zlecenie.setSciezka(sciezka);
-		
-		for (Dokumentacja d:zlecenie.getDokumentacja()) {//d - sciezka-> c:tmp00123.tmp, petla zapisuje wszystkie zaznaczone pliki
-			File tymczasowy = new File(d.getSciezka()); // pobieramy nazwę wszystkich plikow tymczasowych
-			File plikDocelowy = new File(sciezka+d.getNazwa()); // tworzymy sciezke do plikow docelowych
-			plikDocelowy.mkdirs(); // tworzymy folder w sciezce docelowej
-			
-			try {
-				logger.debug("plik tymczasowy to {} oraz docelowy to: {}",tymczasowy, plikDocelowy);
-				Files.copy(tymczasowy.toPath(), plikDocelowy.toPath(), StandardCopyOption.REPLACE_EXISTING); // kopiujemy pliki z folderu tymczasowego do docelowego
-			} catch (IOException e) {
-				logger.error("Błąd kopiowania plików", e);
-				throw new ServiceException("BladKopiowaniaPlikow");
-			}
-			boolean resultat = tymczasowy.delete();
-			if (resultat == false) {
-				logger.warn("Nie udało się usunąć pliku tymczasowego {}", tymczasowy.getPath());
+		if(zlecenie.getDokumentacja()!=null&&!zlecenie.getDokumentacja().isEmpty())
+		{
+			for (Dokumentacja d:zlecenie.getDokumentacja()) {//d - sciezka-> c:tmp00123.tmp, petla zapisuje wszystkie zaznaczone pliki
+				File tymczasowy = new File(d.getSciezka()); // pobieramy nazwę wszystkich plikow tymczasowych
+				File plikDocelowy = new File(sciezka+d.getNazwa()); // tworzymy sciezke do plikow docelowych
+				plikDocelowy.mkdirs(); // tworzymy folder wraz z sciezką docelową
+				
+				try {
+					logger.debug("plik tymczasowy to {} oraz docelowy to: {}",tymczasowy, plikDocelowy);
+					Files.copy(tymczasowy.toPath(), plikDocelowy.toPath(), StandardCopyOption.REPLACE_EXISTING); // kopiujemy pliki z folderu tymczasowego do docelowego
+				} catch (IOException e) {
+					logger.error("Błąd kopiowania plików", e);
+					throw new ServiceException("BladKopiowaniaPlikow");
 				}
-			d.setSciezka(sciezka+d.getNazwa()); // do kazdego dokumentu zapisujemy sciezke, ktora zostala utworzona
-				
-				
-			}
-
-			String sciezkaBazowaZip = "C:"+File.separator+"Platforma"+File.separator+"ZipFiles"+File.separator+format.format(zlecenie.getDataOtrzymania())
-				+File.separator+zlecenie.getZleceniodawca().getNazwa()+File.separator+zlecenie.getNumerZlecenia()+"_"
-				+zlecenie.getUbezpieczyciel().getNazwa()+"_"+zlecenie.getAlias();
-		
-			String sciezkaZip = sciezkaBazowaZip+"_"+zlecenie.getAlias();
-			
-			try {
-				File fileBazowy = new File(sciezkaBazowaZip);// tworzymy sciezke bazowa w ktorej bedziemy zapisywac pliki
-				File file = new File(sciezkaZip+".zip"); // tworzymy folder jak ma sie nazywac gdzie zapisane zostana pliki
-				logger.debug("Sciezka file: {}", file.getAbsolutePath());
-				fileBazowy.mkdirs();
-				BufferedInputStream bis = null;
-				BufferedOutputStream bos = null;
-				FileOutputStream out = new FileOutputStream(file); // wskazujemy miejsce gdzie maja byc zapisane pliki
-				bos = new BufferedOutputStream(out);
-				ZipOutputStream zos = new ZipOutputStream(bos);
-				byte data[] = new byte[2048];
-				
-				//File f = new File(sciezka);
-				
-				for (Dokumentacja d:zlecenie.getDokumentacja()) { // przeszukujemy petlą całą dokumentacje 
-					File f = new File(d.getSciezka()); // wskazujemy sciezke gdzie znajduja sie pliki, ktore maja byc skompresowane
-					System.out.println(d.getNazwa());
-					FileInputStream fi = new FileInputStream(f);
-					bis = new BufferedInputStream(fi, 2048);
-					ZipEntry entry = new ZipEntry(f.getName());
-					zos.putNextEntry(entry);
-					
-					int length;
-					while((length = bis.read(data, 0, 2048)) != -1) {
-						zos.write(data, 0, length);
+				boolean resultat = tymczasowy.delete();
+				if (resultat == false) {
+					logger.warn("Nie udało się usunąć pliku tymczasowego {}", tymczasowy.getPath());
 					}
+				d.setSciezka(sciezka+d.getNazwa()); // do kazdego dokumentu zapisujemy sciezke, ktora zostala utworzona
 					
-					bis.close();
-					fi.close();
+					
 				}
-				zos.close();
+	
+				String sciezkaBazowaZip = "C:"+File.separator+"Platforma"+File.separator+"ZipFiles"+File.separator+format.format(zlecenie.getDataOtrzymania())
+					+File.separator+zlecenie.getZleceniodawca().getNazwa()+File.separator+zlecenie.getNumerZlecenia()+"_"
+					+zlecenie.getUbezpieczyciel().getNazwa()+"_"+zlecenie.getAlias();
+			
 				
-				logger.debug("pomyślnie zapisano pliki");
-			} catch (FileNotFoundException e) {
-				logger.debug("Nie odnaleziono pliku ");
-				e.printStackTrace();
-			} catch (IOException e) {
-				logger.debug("Nie zapisano pliku");
-				e.printStackTrace();
-			} catch (Exception e) {
-				logger.error("Error unknown",e);
+				
+				String sciezkaZip = sciezkaBazowaZip+"_"+zlecenie.getAlias();
+				
+				try {
+					File fileBazowy = new File(sciezkaBazowaZip);// tworzymy sciezke bazowa w ktorej bedziemy zapisywac pliki
+					File file = new File(sciezkaZip+".zip"); // tworzymy folder jak ma sie nazywac gdzie zapisane zostana pliki
+					logger.debug("Sciezka file: {}", file.getAbsolutePath());
+					fileBazowy.mkdirs();
+					BufferedInputStream bis = null;
+					BufferedOutputStream bos = null;
+					FileOutputStream out = new FileOutputStream(file); // wskazujemy miejsce gdzie maja byc zapisane pliki
+					bos = new BufferedOutputStream(out);
+					ZipOutputStream zos = new ZipOutputStream(bos);
+					byte data[] = new byte[2048];
+					
+					//File f = new File(sciezka);
+					
+					for (Dokumentacja d:zlecenie.getDokumentacja()) { // przeszukujemy petlą całą dokumentacje 
+						File f = new File(d.getSciezka()); // wskazujemy sciezke gdzie znajduja sie pliki, ktore maja byc skompresowane
+						System.out.println(d.getNazwa());
+						FileInputStream fi = new FileInputStream(f);
+						bis = new BufferedInputStream(fi, 2048);
+						ZipEntry entry = new ZipEntry(f.getName());
+						zos.putNextEntry(entry);
+						
+						int length;
+						while((length = bis.read(data, 0, 2048)) != -1) {
+							zos.write(data, 0, length);
+						}
+						
+						bis.close();
+						fi.close();
+					}
+					zos.close();
+					
+					logger.debug("pomyślnie zapisano pliki");
+				} catch (FileNotFoundException e) {
+					logger.debug("Nie odnaleziono pliku ");
+					e.printStackTrace();
+				} catch (IOException e) {
+					logger.debug("Nie zapisano pliku");
+					e.printStackTrace();
+				} catch (Exception e) {
+					logger.error("Error unknown",e);
+				}
 			}
-		
 			return super.utworz(zlecenie);
 		}
 		
@@ -153,33 +165,40 @@ public class ZlecenieServiceImpl extends AbstractCRUDService<Zlecenie, Integer> 
 					throw new ServiceException("zlecenieUnikatowyNumer");
 				}
 			}
-			
-			for (Dokumentacja d:encja.getDokumentacja())
+			if(encja.getDokumentacja()!=null&&!encja.getDokumentacja().isEmpty())
 			{
-				if(!d.isTymczasowy())
-					continue;
-				File tymczasowy = new File(d.getSciezka()); // pobieramy sciezke do plikow tymczasowych
-				File plikDocelowy = new File(encja.getSciezka()+d.getNazwa()); // tworzymy sciezke do plikow docelowych
-				try
+				for (Dokumentacja d:encja.getDokumentacja())
 				{
-					Files.copy(tymczasowy.toPath(), plikDocelowy.toPath(), StandardCopyOption.REPLACE_EXISTING);
-				}catch(IOException e)
-				{
-					logger.error("Błąd kopiowania plików", e);
-					throw new ServiceException("BladKopiowaniaPlikow");
+					if(!d.isTymczasowy())
+						continue;
+					File tymczasowy = new File(d.getSciezka()); // pobieramy sciezke do plikow tymczasowych
+					File plikDocelowy = new File(encja.getSciezka()+d.getNazwa()); // tworzymy sciezke do plikow docelowych
+					try
+					{
+						Files.copy(tymczasowy.toPath(), plikDocelowy.toPath(), StandardCopyOption.REPLACE_EXISTING);
+					}catch(IOException e)
+					{
+						logger.error("Błąd kopiowania plików", e);
+					}
+					
+					boolean resultat = tymczasowy.delete();
+					if (resultat == false) {
+						logger.warn("Nie udało się usunąć pliku tymczasowego {}", tymczasowy.getPath());
+					}
+					d.setSciezka(encja.getSciezka()+d.getNazwa()); // do kazdego dokumentu zapisujemy sciezke, ktora zostala utworzona
+					
 				}
-				
-				boolean resultat = tymczasowy.delete();
-				if (resultat == false) {
-					logger.warn("Nie udało się usunąć pliku tymczasowego {}", tymczasowy.getPath());
-				}
-				d.setSciezka(encja.getSciezka()+d.getNazwa()); // do kazdego dokumentu zapisujemy sciezke, ktora zostala utworzona
-				
 			}
 			
 			
-			
 			return super.zapisz(encja);
+		}
+
+		@Override
+		@Transactional(readOnly=true)
+		public Dokumentacja znajdzDokument(Long id) {
+			
+			return dokumentacjaDAO.findOne(id);
 		}
 	
 		

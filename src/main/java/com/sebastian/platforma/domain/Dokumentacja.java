@@ -47,6 +47,9 @@ public class Dokumentacja implements Serializable{
 	@Transient
 	private boolean tymczasowy;
 	
+	@Transient
+	private String nazwaTymczsowegoPliku;
+	
 	public Dokumentacja() {}
 
 	@Override
@@ -69,6 +72,27 @@ public class Dokumentacja implements Serializable{
 				.append("nazwa", nazwa).append("sciezka", sciezka)
 				.append("dataDodania", dataDodania).append("opis", opis)
 				.toString();
+	}
+	
+	public boolean isObrazek()
+	{
+		if(nazwa==null)
+			return false;
+		
+		if(nazwaKonczySieNa("png","jpg","jpeg","gif","bitmap","tif"))
+			return true;
+		return false;
+	}
+	
+	private boolean nazwaKonczySieNa(String... rozszerzenia)
+	{
+		for(String rozszerzenie:rozszerzenia)
+		{
+			if(nazwa.endsWith(rozszerzenie))
+				return true;
+		}
+		
+		return false;
 	}
 
 	public Long getId() {
@@ -117,6 +141,14 @@ public class Dokumentacja implements Serializable{
 
 	public void setTymczasowy(boolean tymczasowy) {
 		this.tymczasowy = tymczasowy;
+	}
+
+	public String getNazwaTymczsowegoPliku() {
+		return nazwaTymczsowegoPliku;
+	}
+
+	public void setNazwaTymczsowegoPliku(String nazwaTymczsowegoPliku) {
+		this.nazwaTymczsowegoPliku = nazwaTymczsowegoPliku;
 	}
 	
 	

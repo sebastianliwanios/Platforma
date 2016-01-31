@@ -7,12 +7,6 @@
   <param-name>contextConfigLocation</param-name>
   <param-value>/WEB-INF/configurationContext.xml</param-value>
  </context-param>
- <context-param>
-	<param-name>primefaces.UPLOADER</param-name>
-	<param-value>auto</param-value>
- </context-param>
- 
- 
  <!-- 
  <context-param>
   <param-name>javax.faces.CONFIG_FILES</param-name>
@@ -24,6 +18,18 @@
   <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
   <param-value>server</param-value>
  </context-param>
+ <context-param>
+  <param-name>primefaces.UPLOADER</param-name>
+  <param-value>auto</param-value>
+ </context-param>
+ <filter>
+  <filter-name>PrimeFaces FileUpload Filter</filter-name>
+  <filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
+ </filter>
+ <filter-mapping>
+  <filter-name>PrimeFaces FileUpload Filter</filter-name>
+  <servlet-name>Faces Servlet</servlet-name>
+ </filter-mapping>
  <listener>
   <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
  </listener>
@@ -31,22 +37,19 @@
   <servlet-name>Faces Servlet</servlet-name>
   <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
  </servlet>
+ <servlet>
+  <servlet-name>ImageServices</servlet-name>
+  <servlet-class>com.sebastian.platforma.services.ImageServices</servlet-class>
+ </servlet>
  <servlet-mapping>
   <servlet-name>Faces Servlet</servlet-name>
-  <url-pattern>/*</url-pattern>
+  <url-pattern>*.xhtml</url-pattern>
+ </servlet-mapping>
+ <servlet-mapping>
+  <servlet-name>ImageServices</servlet-name>
+  <url-pattern>*.ximage</url-pattern>
  </servlet-mapping>
  <welcome-file-list>
   <welcome-file>index2.xhtml</welcome-file>
  </welcome-file-list>
- 
- 
- <filter>
- 	<filter-name>PrimeFaces FileUpload Filter</filter-name>
- 	<filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
-</filter>
-<filter-mapping>
-	<filter-name>PrimeFaces FileUpload Filter</filter-name>
-	<servlet-name>Faces Servlet</servlet-name>
-</filter-mapping>
- 
 </web-app>

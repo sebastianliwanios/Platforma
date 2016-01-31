@@ -86,8 +86,7 @@ public abstract class AbstractListController<T extends Serializable,K extends Se
 	{
 		logger.debug("Create");
 		try {
-			
-			getService().utworz(nowy);
+					getService().utworz(nowy);
 			setSukces(true);
 			nowy=null;
 			JSFUtility.addGlobalMessage(FacesMessage.SEVERITY_INFO,JSFUtility.getResourceBundle(resourceBundleName).getString(CREATE_MSG));

@@ -171,18 +171,19 @@
 					<td colspan="12">
 						<h:commandButton  value="Dodaj pliki" onclick="PF('pliki').show();return false;" />
 						<h:panelGroup id="pliki" layout="block">
-							<ul>
-							<ui:repeat value="#{zlecenieListaController.obiekt.dokumentacja}" var="dokumentacja">
-								<li><h:commandLink value="#{dokumentacja.nazwa} - #{dokumentacja.sciezka}"></h:commandLink> <p:commandLink style="margin-left:10px" action="#{zlecenieListaController.usunDokument(dokumentacja.nazwa)}" value="Usuń" ajax="true" process="@this" update="DialogForm:pliki"/></li>
-							</ui:repeat>
-							</ul>
-							
+							<ui:remove>
+								<ul>
+								<ui:repeat value="#{zlecenieListaController.obiekt.dokumentacja}" var="dokumentacja">
+									<li><h:commandLink value="#{dokumentacja.nazwa} - #{dokumentacja.sciezka}"></h:commandLink> <p:commandLink style="margin-left:10px" action="#{zlecenieListaController.usunDokument(dokumentacja.nazwa)}" value="Usuń" ajax="true" process="@this" update="DialogForm:pliki"/></li>
+								</ui:repeat>
+								</ul>
+							</ui:remove>
 							<h:panelGrid columns="5" cellpadding="10" cellspacing="10">
 								<h:panelGrid columns="1">
-								<p:commandLink onclick="return false;">
+								<p:commandLink onclick="PF('listaPlikow').show();" execute="@none" update=":listFiles"   >
 									<h:graphicImage name="folder_image.png" library="images"/>
 								</p:commandLink>
-								<h:outputText value="Liczba #{zlecenieListaController.imagesCount}" />
+								<h:outputText value="Liczba #{zlecenieListaController.imagesCount}"  />
 								</h:panelGrid>
 							</h:panelGrid>
 							
@@ -194,7 +195,9 @@
 			</table>
 			<h:panelGrid columns="2">
 				<p:commandButton id="dodaj" value="Dodaj" ajax="true" action="#{zlecenieListaController.create}" update="@form :ZlecenieForm:zlecenieLista" rendered="#{zlecenieListaController.dodawanie}" oncomplete=" if(document.getElementById('DialogForm:operacja').value=='true'){PF('nowy').hide();};"> </p:commandButton>
-				<p:commandButton id="anuluj" value="Anuluj" ajax="true" rendered="#{zlecenieListaController.dodawanie}" onclick="PF('nowy').hide();" update=":ZlecenieForm" immediate="true"> </p:commandButton>
+				<p:commandButton id="anuluj" value="Anuluj" ajax="true" rendered="#{zlecenieListaController.dodawanie}" onclick="PF('nowy').hide();" > 
+					<p:ajax resetValues="true" update="@form :ZlecenieForm"></p:ajax>
+				</p:commandButton>
 				<p:commandButton value="Zapisz" action="#{zlecenieListaController.save}" update=":ZlecenieForm @form" rendered="#{zlecenieListaController.edycja}" oncomplete="if(document.getElementById('DialogForm:operacja').value=='true'){PF('nowy').hide();};"/>
     			<p:commandButton value="Zamknij" onclick="PF('nowy').hide();return false;" rendered="#{zlecenieListaController.wyswietlanie || zlecenieListaController.edycja}" />
 			</h:panelGrid>
@@ -204,6 +207,36 @@
 	<p:dialog widgetVar="pliki" height="500" width="800" header="Dodaj załączniki" modal="true" showEffect="puff" hideEffect="clip">
 		<h:form id="fileUpload" enctype="multipart/form-data">
 			<p:fileUpload fileUploadListener="#{zlecenieListaController.handleFileUpload}" multiple="true" update=":DialogForm:pliki"/>			
+		</h:form>
+	</p:dialog>
+	
+	<p:dialog widgetVar="listaPlikow" height="500" width="1000" header="Lista załączników" showEffect="puff" hideEffect="clip">
+		<h:form id="listFiles">
+			<p:commandButton action="#{zlecenieListaController.usunWszystkieDokumenty()}" value="Usuń wszystkie" ajax="true" process="@this" update="@form :DialogForm:pliki" />
+			<p:dataGrid var="plik" value="#{zlecenieListaController.obiekt.dokumentacja}" columns="6" layout="grid"
+        			rows="12" paginator="true" id="cars" paginatorPosition="bottom"
+        			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+        			rowsPerPageTemplate="6,12,16">
+				
+				<h:panelGrid columns="1">
+					<h:panelGroup>
+						<ui:fragment rendered="#{plik.obrazek and plik.tymczasowy}">
+							<img src="obrazek.ximage?filename=#{plik.nazwaTymczsowegoPliku}" width="128" height="128" />
+						</ui:fragment>
+						<ui:fragment rendered="#{plik.obrazek and not plik.tymczasowy}">
+							<img src="obrazek.ximage?file=#{plik.id}" width="128" height="128" />
+						</ui:fragment>
+						<h:graphicImage library="images" name="dokument.png" rendered="#{!plik.obrazek}" width="128" height="128" />
+					</h:panelGroup>
+					<h:panelGrid columns="2">
+						<h:outputText value="#{plik.nazwa}" />
+						<p:commandLink style="margin-left:3px" action="#{zlecenieListaController.usunDokument(plik.nazwa)}" value="Usuń" ajax="true" process="@this" update="@form :DialogForm:pliki"/>
+					</h:panelGrid>
+				</h:panelGrid>	
+					
+					
+				
+			</p:dataGrid>
 		</h:form>
 	</p:dialog>
 </body> 

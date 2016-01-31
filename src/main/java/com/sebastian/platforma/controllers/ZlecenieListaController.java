@@ -146,6 +146,7 @@ public class ZlecenieListaController extends AbstractListController<Zlecenie, In
 			dokumentacja.setSciezka(tempFile.getAbsolutePath());
 			dokumentacja.setTymczasowy(true);
 			dokumentacja.setDataDodania(new Date());
+			dokumentacja.setNazwaTymczsowegoPliku(tempFile.getName());
 			this.getObiekt().dodajDokument(dokumentacja);
 		}
 		catch(IOException e)
@@ -154,6 +155,11 @@ public class ZlecenieListaController extends AbstractListController<Zlecenie, In
 		}
 		
 		System.out.println(event.getFile().getFileName());
+	}
+	
+	public void usunWszystkieDokumenty()
+	{
+		this.getObiekt().getDokumentacja().clear();
 	}
 	
 	public void usunDokument(String nazwaPliku)

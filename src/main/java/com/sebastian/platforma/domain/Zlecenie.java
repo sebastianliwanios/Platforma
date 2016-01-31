@@ -56,6 +56,7 @@ public class Zlecenie implements Serializable{
 	
 	@Column(name="mail")
 	@NotNull(message="Pole nie moze byc puste")
+	@Size(min=1, message="Pole nie moze byc puste")
 	@Email(message="Podano nieporawnego maila")
 	private String mail;
 
