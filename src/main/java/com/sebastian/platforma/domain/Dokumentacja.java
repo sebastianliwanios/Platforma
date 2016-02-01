@@ -36,7 +36,7 @@ public class Dokumentacja implements Serializable{
 	@NotNull
 	@Size(min=1, max=512)
 	private String sciezka;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@NotNull
 	private Date dataDodania;
@@ -150,7 +150,6 @@ public class Dokumentacja implements Serializable{
 	public void setNazwaTymczsowegoPliku(String nazwaTymczsowegoPliku) {
 		this.nazwaTymczsowegoPliku = nazwaTymczsowegoPliku;
 	}
-	
 	
 	
 }

@@ -16,15 +16,12 @@ import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.faces.application.FacesMessage;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sebastian.platforma.controllers.JSFUtility;
 import com.sebastian.platforma.dao.IDokumentacjaDAO;
 import com.sebastian.platforma.dao.IZlecenieDAO;
 import com.sebastian.platforma.domain.Dokumentacja;
@@ -68,7 +65,8 @@ public class ZlecenieServiceImpl extends AbstractCRUDService<Zlecenie, Integer> 
 		if(!rezultat)
 			logger.warn("Nie udało się utworzyć sciezki {}",sciezka);
 		zlecenie.setSciezka(sciezka);
-		if(zlecenie.getDokumentacja()!=null&&!zlecenie.getDokumentacja().isEmpty())
+		
+		if(zlecenie.getDokumentacja()!=null && !zlecenie.getDokumentacja().isEmpty())
 		{
 			for (Dokumentacja d:zlecenie.getDokumentacja()) {//d - sciezka-> c:tmp00123.tmp, petla zapisuje wszystkie zaznaczone pliki
 				File tymczasowy = new File(d.getSciezka()); // pobieramy nazwę wszystkich plikow tymczasowych
@@ -90,28 +88,31 @@ public class ZlecenieServiceImpl extends AbstractCRUDService<Zlecenie, Integer> 
 					
 					
 				}
-	
+	/*
+	 * Archiwizacja plików
+	 * ---------------------------
+	 */
 				String sciezkaBazowaZip = "C:"+File.separator+"Platforma"+File.separator+"ZipFiles"+File.separator+format.format(zlecenie.getDataOtrzymania())
-					+File.separator+zlecenie.getZleceniodawca().getNazwa()+File.separator+zlecenie.getNumerZlecenia()+"_"
-					+zlecenie.getUbezpieczyciel().getNazwa()+"_"+zlecenie.getAlias();
-			
-				
-				
-				String sciezkaZip = sciezkaBazowaZip+"_"+zlecenie.getAlias();
+					+File.separator+zlecenie.getZleceniodawca().getNazwa()+File.separator; 
+	
+				String sciezkaZip = sciezkaBazowaZip+zlecenie.getNumerZlecenia()+"_"
+						+zlecenie.getUbezpieczyciel().getNazwa()+"_"+zlecenie.getAlias();
 				
 				try {
 					File fileBazowy = new File(sciezkaBazowaZip);// tworzymy sciezke bazowa w ktorej bedziemy zapisywac pliki
 					File file = new File(sciezkaZip+".zip"); // tworzymy folder jak ma sie nazywac gdzie zapisane zostana pliki
 					logger.debug("Sciezka file: {}", file.getAbsolutePath());
-					fileBazowy.mkdirs();
+					boolean isZapisany = fileBazowy.mkdirs();
+					if (!isZapisany){
+						logger.debug("Nie zapisano archiwum");
+					}
+					//zlecenie.setZipSciezka(sciezkaZip);
 					BufferedInputStream bis = null;
 					BufferedOutputStream bos = null;
 					FileOutputStream out = new FileOutputStream(file); // wskazujemy miejsce gdzie maja byc zapisane pliki
 					bos = new BufferedOutputStream(out);
 					ZipOutputStream zos = new ZipOutputStream(bos);
 					byte data[] = new byte[2048];
-					
-					//File f = new File(sciezka);
 					
 					for (Dokumentacja d:zlecenie.getDokumentacja()) { // przeszukujemy petlą całą dokumentacje 
 						File f = new File(d.getSciezka()); // wskazujemy sciezke gdzie znajduja sie pliki, ktore maja byc skompresowane
@@ -165,7 +166,7 @@ public class ZlecenieServiceImpl extends AbstractCRUDService<Zlecenie, Integer> 
 					throw new ServiceException("zlecenieUnikatowyNumer");
 				}
 			}
-			if(encja.getDokumentacja()!=null&&!encja.getDokumentacja().isEmpty())
+			if(encja.getDokumentacja()!=null && !encja.getDokumentacja().isEmpty())
 			{
 				for (Dokumentacja d:encja.getDokumentacja())
 				{
@@ -188,9 +189,68 @@ public class ZlecenieServiceImpl extends AbstractCRUDService<Zlecenie, Integer> 
 					d.setSciezka(encja.getSciezka()+d.getNazwa()); // do kazdego dokumentu zapisujemy sciezke, ktora zostala utworzona
 					
 				}
+				
+			/*
+			* Archiwizacja plików
+			* ---------------------------
+			*/
+				
+				SimpleDateFormat format = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
+				
+				String sciezkaBazowaZip = "C:"+File.separator+"Platforma"+File.separator+"ZipFiles"+File.separator+format.format(encja.getDataOtrzymania())
+								+File.separator+encja.getZleceniodawca().getNazwa()+File.separator; 
+				
+				String sciezkaZip = sciezkaBazowaZip+encja.getNumerZlecenia()+"_"
+									+encja.getUbezpieczyciel().getNazwa()+"_"+encja.getAlias();
+				
+				try {
+					File fileBazowy = new File(sciezkaBazowaZip);// tworzymy sciezke bazowa w ktorej bedziemy zapisywac pliki
+					File file = new File(sciezkaZip+".zip"); // tworzymy folder jak ma sie nazywac gdzie zapisane zostana pliki
+					//File fileIstniejacy = new File(encja.getZipSciezka());
+					//logger.debug("Sciezka do archiwum {} ",fileIstniejacy );
+					//boolean isDeleted = fileIstniejacy.delete();
+				
+					logger.debug("Plik o nazwie {}",file.getName());
+					logger.debug("Sciezka file: {}", file.getAbsolutePath());
+					//logger.debug("Czy plik zostal skasowany ? {}",isDeleted);
+					fileBazowy.mkdirs();
+					BufferedInputStream bis = null;
+					BufferedOutputStream bos = null;
+					FileOutputStream out = new FileOutputStream(file); // wskazujemy miejsce gdzie maja byc zapisane pliki
+					bos = new BufferedOutputStream(out);
+					ZipOutputStream zos = new ZipOutputStream(bos);
+					byte data[] = new byte[2048];
+						
+					for (Dokumentacja d:encja.getDokumentacja()) { // przeszukujemy petlą całą dokumentacje 
+						File f = new File(d.getSciezka()); // wskazujemy sciezke gdzie znajduja sie pliki, ktore maja byc skompresowane
+						System.out.println(d.getNazwa());
+						FileInputStream fi = new FileInputStream(f);
+						bis = new BufferedInputStream(fi, 2048);
+						ZipEntry entry = new ZipEntry(f.getName());
+						zos.putNextEntry(entry);
+							
+						int length;
+						while((length = bis.read(data, 0, 2048)) != -1) {
+							zos.write(data, 0, length);
+						}
+							
+						bis.close();
+						fi.close();
+						
+					zos.close();
+						
+					logger.debug("pomyślnie zapisano pliki");
+					}
+				} catch (FileNotFoundException e) {
+					logger.debug("Nie odnaleziono pliku ");
+					e.printStackTrace();
+				} catch (IOException e) {
+					logger.debug("Nie zapisano pliku");
+					e.printStackTrace();
+				} catch (Exception e) {
+					logger.error("Error unknown",e);
+				}	
 			}
-			
-			
 			return super.zapisz(encja);
 		}
 

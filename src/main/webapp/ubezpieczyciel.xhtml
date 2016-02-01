@@ -5,48 +5,64 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"> 
 
-<h:head></h:head> 
+<h:head>
+	<h:outputStylesheet library="css" name="style.css"/>
+</h:head>
 <body> 
-	<h:form id="UbezpieczycielForm">
+	<div id="header">
+		<table width="100%" cellspacing="10">
+			<tr>
+				<td align="center" width="130"><p:commandButton value="Strona główna" action="index2.hxtml"/> </td>
+				<td align="center" width="130"><h3><h:outputText value="Lista ubezpieczycieli" /></h3></td> 
+				<td align="center" width="130"><p:commandButton value="Powrót" onclick="javascript:history.go(-1)"/> </td>
+			</tr>
+		</table>
+	</div>
+	<div id="navigation">
+		<h:form id="UbezpieczycielForm">
 		<p:messages globalOnly="true" />
-		<h3 style="text-align: center;"><h:outputText value="Lista ubezpieczycieli" /></h3>
 		
-		<p:toolbar id="toolbar">
-			<f:facet name="left">
-				<p:commandButton value="Nowy" icon="ui-icon-document" onclick="PF('nowy').show();" ajax="true" action="#{ubezpieczycielListaController.initNowy}" update=":DialogForm"/>
-				<p:commandButton value="Edycja" icon="ui-icon-pencil" onclick="PF('nowy').show();" ajax="true" action="#{ubezpieczycielListaController.initEdycja}" update=":DialogForm" disabled="#{ubezpieczycielListaController.zaznaczony==null}"/>
-				<p:commandButton value="Wyświetl" icon="ui-icon-search" onclick="PF('nowy').show();" ajax="true" action="#{ubezpieczycielListaController.initWyswietl}" update=":DialogForm" disabled="#{ubezpieczycielListaController.zaznaczony==null}"/>
-				<p:commandButton value="Usuń" icon="ui-icon-trash" ajax="true" action="#{ubezpieczycielListaController.remove}" update="@form" disabled="#{ubezpieczycielListaController.zaznaczony==null}"/>
-			</f:facet>
-		</p:toolbar>
-		<p:dataTable style="width:50%; margin:0 auto" id="ubezpieczycielLista" value="#{ubezpieczycielListaController.list}" var="ubezpieczyciel" selectionMode="single" selection="#{ubezpieczycielListaController.zaznaczony}" rowKey="#{ubezpieczyciel.id}">
-			<p:ajax event="rowSelect" update="UbezpieczycielForm:toolbar"/>
-			<p:ajax event="rowUnselect" update="UbezpieczycielForm:toolbar"/>
-			<p:column headerText="id">
-				<h:outputText value="#{ubezpieczyciel.id}"/> 
-			</p:column>
-			<p:column headerText="Nazwa">
-				<h:outputText value="#{ubezpieczyciel.nazwa}"/> 
-			</p:column>
-			
-		</p:dataTable>
-	</h:form>
-	<p:dialog widgetVar="nowy" height="200" width="700" header="Ubezpieczyciel" modal="true" showEffect="puff" hideEffect="clip">
-		<h:form id="DialogForm">
-			<h:inputHidden value="#{ubezpieczycielListaController.sukces}" id="operacja" />
-			<h:panelGrid columns="3">
-				<p:outputLabel value="Nazwa" for="nazwa"/>
-				<p:inputText id="nazwa" value="#{ubezpieczycielListaController.obiekt.nazwa}" readonly="#{ubezpieczycielListaController.wyswietlanie}"/>
-				<p:message for="nazwa"/>
-			</h:panelGrid>
-			<h:panelGrid columns="2">
-				<p:commandButton id="dodaj" value="Zatwierdź" ajax="true" action="#{ubezpieczycielListaController.create}" update="@form :UbezpieczycielForm:ubezpieczycielLista" rendered="#{ubezpieczycielListaController.dodawanie}" oncomplete=" if(document.getElementById('DialogForm:operacja').value=='true'){PF('nowy').hide();};"> </p:commandButton>
-				<p:commandButton id="zapisz" value="Zapisz" ajax="true" action="#{ubezpieczycielListaController.save}" update="@form :UbezpieczycielForm:ubezpieczycielLista" rendered="#{ubezpieczycielListaController.dodawanie}" oncomplete=" if(document.getElementById('DialogForm:operacja').value=='true'){PF('nowy').hide();};"> </p:commandButton>
-				<p:commandButton value="Zapisz" action="#{ubezpieczycielListaController.save}" update=":UbezpieczycielForm @form" rendered="#{ubezpieczycielListaController.edycja}" oncomplete="if(document.getElementById('DialogForm:operacja').value=='true'){PF('nowy').hide();};"/>
-    			<p:commandButton value="Zamknij" onclick="PF('nowy').hide();return false;" rendered="#{ubezpieczycielListaController.wyswietlanie}"/>
-			</h:panelGrid>
+		<ui:remove><h3 style="text-align: center;"><h:outputText value="Lista ubezpieczycieli" /></h3></ui:remove>
+		
+			<p:toolbar id="toolbar">
+				<f:facet name="left">
+					<p:commandButton value="Nowy" icon="ui-icon-document" onclick="PF('nowy').show();" ajax="true" action="#{ubezpieczycielListaController.initNowy}" update=":DialogForm"/>
+					<p:commandButton value="Edycja" icon="ui-icon-pencil" onclick="PF('nowy').show();" ajax="true" action="#{ubezpieczycielListaController.initEdycja}" update=":DialogForm" disabled="#{ubezpieczycielListaController.zaznaczony==null}"/>
+					<p:commandButton value="Wyświetl" icon="ui-icon-search" onclick="PF('nowy').show();" ajax="true" action="#{ubezpieczycielListaController.initWyswietl}" update=":DialogForm" disabled="#{ubezpieczycielListaController.zaznaczony==null}"/>
+					<p:commandButton value="Usuń" icon="ui-icon-trash" ajax="true" action="#{ubezpieczycielListaController.remove}" update="@form" disabled="#{ubezpieczycielListaController.zaznaczony==null}"/>
+				</f:facet>
+			</p:toolbar>
+			<p:dataTable style="width:50%; margin:0 auto" id="ubezpieczycielLista" value="#{ubezpieczycielListaController.list}" var="ubezpieczyciel" selectionMode="single" selection="#{ubezpieczycielListaController.zaznaczony}" rowKey="#{ubezpieczyciel.id}">
+				<p:ajax event="rowSelect" update="UbezpieczycielForm:toolbar"/>
+				<p:ajax event="rowUnselect" update="UbezpieczycielForm:toolbar"/>
+				<p:column headerText="id">
+					<h:outputText value="#{ubezpieczyciel.id}"/> 
+				</p:column>
+				<p:column headerText="Nazwa">
+					<h:outputText value="#{ubezpieczyciel.nazwa}"/> 
+				</p:column>
+				
+			</p:dataTable>
 		</h:form>
-	</p:dialog>
-	
+		<p:dialog widgetVar="nowy" height="200" width="700" header="Ubezpieczyciel" modal="true" showEffect="puff" hideEffect="clip">
+			<h:form id="DialogForm">
+				<h:inputHidden value="#{ubezpieczycielListaController.sukces}" id="operacja" />
+				<h:panelGrid columns="3">
+					<p:outputLabel value="Nazwa" for="nazwa"/>
+					<p:inputText id="nazwa" value="#{ubezpieczycielListaController.obiekt.nazwa}" readonly="#{ubezpieczycielListaController.wyswietlanie}"/>
+					<p:message for="nazwa"/>
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton id="dodaj" value="Zatwierdź" ajax="true" action="#{ubezpieczycielListaController.create}" update="@form :UbezpieczycielForm:ubezpieczycielLista" rendered="#{ubezpieczycielListaController.dodawanie}" oncomplete=" if(document.getElementById('DialogForm:operacja').value=='true'){PF('nowy').hide();};"> </p:commandButton>
+					<p:commandButton id="zapisz" value="Zapisz" ajax="true" action="#{ubezpieczycielListaController.save}" update="@form :UbezpieczycielForm:ubezpieczycielLista" rendered="#{ubezpieczycielListaController.dodawanie}" oncomplete=" if(document.getElementById('DialogForm:operacja').value=='true'){PF('nowy').hide();};"> </p:commandButton>
+					<p:commandButton value="Zapisz" action="#{ubezpieczycielListaController.save}" update=":UbezpieczycielForm @form" rendered="#{ubezpieczycielListaController.edycja}" oncomplete="if(document.getElementById('DialogForm:operacja').value=='true'){PF('nowy').hide();};"/>
+	    			<p:commandButton value="Zamknij" onclick="PF('nowy').hide();return false;" rendered="#{ubezpieczycielListaController.wyswietlanie}"/>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+	</div>
+	<div id="footer">
+		<h:outputText value="Copyright 2015 @ Sebastian Liwanios" />
+	</div>
 </body> 
 </html>

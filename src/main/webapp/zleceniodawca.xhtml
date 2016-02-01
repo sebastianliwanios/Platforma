@@ -5,56 +5,71 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"> 
 
-<h:head></h:head> 
+<h:head>
+	<h:outputStylesheet library="css" name="style.css"/>
+</h:head>
 <body> 
-	<h:form id="ZleceniodawcaListaForm">
-		<p:messages globalOnly="true">
-		
-		</p:messages>
-		<h3 style="text-align: center;"><h:outputText value="Lista zleceniodawców" /></h3>
-		<p:toolbar id="toolbar">
-			<f:facet name="left">
-				<p:commandButton  value="Nowy" icon="ui-icon-document" onclick="PF('nowy').show();" ajax="true"  action="#{zleceniodawcaListaController.initNowy}" update=":ZleceniodawcaForm"/>
-				<p:commandButton  value="Edycja" icon="ui-icon-pencil" onclick="PF('nowy').show();" ajax="true" action="#{zleceniodawcaListaController.initEdycja}" update=":ZleceniodawcaForm" disabled="#{zleceniodawcaListaController.zaznaczony==null}"/>
-				<p:commandButton  value="Wyświetl" icon="ui-icon-search" onclick="PF('nowy').show();" ajax="true" action="#{zleceniodawcaListaController.initWyswietl}" update=":ZleceniodawcaForm" disabled="#{zleceniodawcaListaController.zaznaczony==null}"/>
-				<p:commandButton  value="Usuń" icon="ui-icon-trash" action="#{zleceniodawcaListaController.remove}" update="@form" disabled="#{zleceniodawcaListaController.zaznaczony==null}"/>
-			</f:facet>	
-		</p:toolbar>
-		<p:dataTable id="zleceniodawcaLista" value="#{zleceniodawcaListaController.list}" var="zleceniodawca" selectionMode="single" selection="#{zleceniodawcaListaController.zaznaczony}" rowKey="#{zleceniodawca.id}" style="margin-top: 10px;">
-			<p:ajax event="rowSelect"  update="ZleceniodawcaListaForm:toolbar" /> <ui:remove><!-- po wybraniu wiersza odświeza sie forularz a dokladnie toolbar --></ui:remove>
-        	<p:ajax event="rowUnselect"  update="ZleceniodawcaListaForm:toolbar" />
-			<p:column headerText="id" >
-				<h:outputText value="#{zleceniodawca.id}" />
-			</p:column>
-			<p:column headerText="Nazwa">
-				<h:outputText value="#{zleceniodawca.nazwa}" />
-			</p:column>
-			<p:column headerText="Opis">
-				<h:outputText value="#{zleceniodawca.opis}" />
-			</p:column>
-		</p:dataTable>
-	</h:form>
-	<p:dialog modal="true" header="Nowy zleceniodawca" widgetVar="nowy" height="400" width="700" showEffect="explode">
-    	<h:form id="ZleceniodawcaForm">
-    		<h:inputHidden id="operacja" value="#{zleceniodawcaListaController.sukces}"  />
-    		<h:panelGrid columns="3">
-    			<p:outputLabel value="Nazwa: " for="nazwa"/>
-    			<p:inputText id="nazwa" value="#{zleceniodawcaListaController.obiekt.nazwa}" readonly="#{zleceniodawcaListaController.wyswietlanie}"/>
-    			<p:message for="nazwa"/>
-    			
-    			<p:outputLabel value="Opis " for="opis"/>
-    			<p:inputTextarea id="opis" value="#{zleceniodawcaListaController.obiekt.opis}" readonly="#{zleceniodawcaListaController.wyswietlanie}"/>
-    			<p:message for="opis"/>
-    		</h:panelGrid>
-    		<h:panelGrid columns="2">
-    			<p:commandButton value="Zatwierdź" action="#{zleceniodawcaListaController.create}" update=":ZleceniodawcaListaForm @form" rendered="#{zleceniodawcaListaController.dodawanie}" oncomplete="if(document.getElementById('ZleceniodawcaForm:operacja').value=='true'){PF('nowy').hide();};"/>
-    			<p:commandButton value="Anuluj" onclick="PF('nowy').hide();return false;" rendered="#{zleceniodawcaListaController.dodawanie or zleceniodawcaListaController.edycja}"/>
-    			<p:commandButton value="Zapisz" action="#{zleceniodawcaListaController.save}" update=":ZleceniodawcaListaForm @form" rendered="#{zleceniodawcaListaController.edycja}" oncomplete="if(document.getElementById('ZleceniodawcaForm:operacja').value=='true'){PF('nowy').hide();};"/>
-    			<p:commandButton value="Zamknij" onclick="PF('nowy').hide();return false;" rendered="#{zleceniodawcaListaController.wyswietlanie}"/>
-    			<ui:remove>onclick->return false; blokuje dalssze wykonywanie programu(javascript - nie przetwarza jaxa) , onclick po nacisnieciu przycisku albo howa sie menu albo sie pojawia
-    			; rendered - jezeli boolean jest true to bedzie przycisk renderowany jeszeli false to nie; oncomplete - jezeli bedzie true to przycisk nie bedzie renderowany</ui:remove>
-    		</h:panelGrid>
-    	</h:form>
-	</p:dialog>
+	<div id="header">
+		<table width="100%" cellspacing="10">
+			<tr>
+				<td align="center" width="130"><p:commandButton value="Strona główna" action="index2.hxtml"/> </td>
+				<td align="center" width="130"><h3><h:outputText value="Lista zleceniodawców" /></h3></td> 
+				<td align="center" width="130"><p:commandButton value="Powrót" onclick="javascript:history.go(-1)"/> </td>
+			</tr>
+		</table>
+	</div>
+	<div id="navigation">
+		<h:form id="ZleceniodawcaListaForm">
+			<p:messages globalOnly="true">
+			
+			</p:messages>
+			<p:toolbar id="toolbar">
+				<f:facet name="left">
+					<p:commandButton  value="Nowy" icon="ui-icon-document" onclick="PF('nowy').show();" ajax="true"  action="#{zleceniodawcaListaController.initNowy}" update=":ZleceniodawcaForm"/>
+					<p:commandButton  value="Edycja" icon="ui-icon-pencil" onclick="PF('nowy').show();" ajax="true" action="#{zleceniodawcaListaController.initEdycja}" update=":ZleceniodawcaForm" disabled="#{zleceniodawcaListaController.zaznaczony==null}"/>
+					<p:commandButton  value="Wyświetl" icon="ui-icon-search" onclick="PF('nowy').show();" ajax="true" action="#{zleceniodawcaListaController.initWyswietl}" update=":ZleceniodawcaForm" disabled="#{zleceniodawcaListaController.zaznaczony==null}"/>
+					<p:commandButton  value="Usuń" icon="ui-icon-trash" action="#{zleceniodawcaListaController.remove}" update="@form" disabled="#{zleceniodawcaListaController.zaznaczony==null}"/>
+				</f:facet>	
+			</p:toolbar>
+			<p:dataTable id="zleceniodawcaLista" value="#{zleceniodawcaListaController.list}" var="zleceniodawca" selectionMode="single" selection="#{zleceniodawcaListaController.zaznaczony}" rowKey="#{zleceniodawca.id}" style="margin-top: 10px;">
+				<p:ajax event="rowSelect"  update="ZleceniodawcaListaForm:toolbar" /> <ui:remove><!-- po wybraniu wiersza odświeza sie forularz a dokladnie toolbar --></ui:remove>
+	        	<p:ajax event="rowUnselect"  update="ZleceniodawcaListaForm:toolbar" />
+				<p:column headerText="id" >
+					<h:outputText value="#{zleceniodawca.id}" />
+				</p:column>
+				<p:column headerText="Nazwa">
+					<h:outputText value="#{zleceniodawca.nazwa}" />
+				</p:column>
+				<p:column headerText="Opis">
+					<h:outputText value="#{zleceniodawca.opis}" />
+				</p:column>
+			</p:dataTable>
+		</h:form>
+		<p:dialog modal="true" header="Nowy zleceniodawca" widgetVar="nowy" height="400" width="700" showEffect="explode">
+	    	<h:form id="ZleceniodawcaForm">
+	    		<h:inputHidden id="operacja" value="#{zleceniodawcaListaController.sukces}"  />
+	    		<h:panelGrid columns="3">
+	    			<p:outputLabel value="Nazwa: " for="nazwa"/>
+	    			<p:inputText id="nazwa" value="#{zleceniodawcaListaController.obiekt.nazwa}" readonly="#{zleceniodawcaListaController.wyswietlanie}"/>
+	    			<p:message for="nazwa"/>
+	    			
+	    			<p:outputLabel value="Opis " for="opis"/>
+	    			<p:inputTextarea id="opis" value="#{zleceniodawcaListaController.obiekt.opis}" readonly="#{zleceniodawcaListaController.wyswietlanie}"/>
+	    			<p:message for="opis"/>
+	    		</h:panelGrid>
+	    		<h:panelGrid columns="2">
+	    			<p:commandButton value="Zatwierdź" action="#{zleceniodawcaListaController.create}" update=":ZleceniodawcaListaForm @form" rendered="#{zleceniodawcaListaController.dodawanie}" oncomplete="if(document.getElementById('ZleceniodawcaForm:operacja').value=='true'){PF('nowy').hide();};"/>
+	    			<p:commandButton value="Anuluj" onclick="PF('nowy').hide();return false;" rendered="#{zleceniodawcaListaController.dodawanie or zleceniodawcaListaController.edycja}"/>
+	    			<p:commandButton value="Zapisz" action="#{zleceniodawcaListaController.save}" update=":ZleceniodawcaListaForm @form" rendered="#{zleceniodawcaListaController.edycja}" oncomplete="if(document.getElementById('ZleceniodawcaForm:operacja').value=='true'){PF('nowy').hide();};"/>
+	    			<p:commandButton value="Zamknij" onclick="PF('nowy').hide();return false;" rendered="#{zleceniodawcaListaController.wyswietlanie}"/>
+	    			<ui:remove>onclick->return false; blokuje dalssze wykonywanie programu(javascript - nie przetwarza jaxa) , onclick po nacisnieciu przycisku albo howa sie menu albo sie pojawia
+	    			; rendered - jezeli boolean jest true to bedzie przycisk renderowany jeszeli false to nie; oncomplete - jezeli bedzie true to przycisk nie bedzie renderowany</ui:remove>
+	    		</h:panelGrid>
+	    	</h:form>
+		</p:dialog>
+	</div>
+	<div id="footer">
+		<h:outputText value="Copyright 2015 @ Sebastian Liwanios" />
+	</div>
 </body> 
 </html>

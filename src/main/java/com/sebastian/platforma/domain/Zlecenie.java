@@ -24,10 +24,10 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.hibernate.validator.constraints.Email;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.hibernate.validator.constraints.Email;
 
 @Entity
 public class Zlecenie implements Serializable{
@@ -281,7 +281,6 @@ public class Zlecenie implements Serializable{
 	public void setDataModyfikacji(Date dataModyfikacji) {
 		this.dataModyfikacji = dataModyfikacji;
 	}
-	
 	
 	
 	

@@ -5,239 +5,248 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"> 
 
-<h:head></h:head> 
+<h:head>
+	<h:outputStylesheet library="css" name="style.css"/>
+</h:head>
 <body> 
-	<h:form id="ZlecenieForm">
-		<p:messages globalOnly="true" />
-		<h3 style="text-align: center;"><h:outputText value="Lista zleceń" /></h3>
-		
-		<p:toolbar id="toolbar">
-			<f:facet name="left">
-				<p:commandButton value="Nowy" icon="ui-icon-document" onclick="PF('nowy').show();" ajax="true" action="#{zlecenieListaController.initNowy}" update=":DialogForm @form" immediate="true" process="@this"  />
-				<p:commandButton value="Edycja" icon="ui-icon-pencil" onclick="PF('nowy').show();" ajax="true" action="#{zlecenieListaController.initEdycja}" update=":DialogForm" process="@this" disabled="#{zlecenieListaController.zaznaczony==null}"/>
-				<p:commandButton value="Wyświetl" icon="ui-icon-search" onclick="PF('nowy').show();" ajax="true" action="#{zlecenieListaController.initWyswietl}" update=":DialogForm" disabled="#{zlecenieListaController.zaznaczony==null}" immediate="true"/>
-				<p:commandButton value="Usuń" icon="ui-icon-trash" ajax="true" action="#{zlecenieListaController.remove()}" update="@form" disabled="#{zlecenieListaController.zaznaczony==null}" /> 
-
-			</f:facet>
-		</p:toolbar>
-		<p:dataTable style="width:75%; margin:0 auto" id="zlecenieLista" value="#{zlecenieListaController.list}" var="zlecenie" selectionMode="single" selection="#{zlecenieListaController.zaznaczony}" rowKey="#{zlecenie.id}">	
+	<div id="header">
+		<table width="100%" cellpadding="10">
+			<tr>
+				<td align="center" width="130"><p:commandButton value="Strona główna" action="index2.hxtml"/> </td>
+				<td align="center" width="130"><h3><h:outputText value="Lista zleceń" /></h3></td> 
+				<td align="center" width="130"><p:commandButton value="Powrót" onclick="javascript:history.go(-1)"/> </td>
+			</tr>
+		</table>
+	</div>
+	<div id="navigation">
+		<h:form id="ZlecenieForm">
+			<p:messages globalOnly="true" />
 			
-			<p:ajax event="rowSelect" update="ZlecenieForm:toolbar"/>
-			<p:ajax event="rowUnselect" update="ZlecenieForm:toolbar"/>
-			
-			<p:column headerText="ID"> 
-				<h:outputText value="#{zlecenie.id}" /> 
-			</p:column>
-			
-			<p:column headerText="Numer"> 
-				<h:outputText value="#{zlecenie.numerZlecenia}" /> 
-			</p:column>
-			
-			<p:column headerText="Zleceniodawca"> 
-				<h:outputText value="#{zlecenie.zleceniodawca.nazwa}" /> 
-			</p:column>
-			
-			<p:column headerText="Ubezpieczyciel">
-				<h:outputText value="#{zlecenie.ubezpieczyciel.nazwa}" />
-			</p:column>
-			
-			<p:column headerText="Alias">
-				<h:outputText value="#{zlecenie.alias}" />
-			</p:column>
-			
-			<p:column headerText="Status">
-				<h:outputText value="#{zlecenie.status}" />
-			</p:column>
-			
-			<p:column headerText="Stawka">
-				<h:outputText value="#{zlecenie.stawka}" />
-			</p:column>
-		</p:dataTable>
+			<p:toolbar id="toolbar">
+				<f:facet name="left">
+					<p:commandButton value="Nowy" icon="ui-icon-document" onclick="PF('nowy').show();" ajax="true" action="#{zlecenieListaController.initNowy}" update=":DialogForm @form" immediate="true" process="@this"  />
+					<p:commandButton value="Edycja" icon="ui-icon-pencil" onclick="PF('nowy').show();" ajax="true" action="#{zlecenieListaController.initEdycja}" update=":DialogForm" process="@this" disabled="#{zlecenieListaController.zaznaczony==null}"/>
+					<p:commandButton value="Wyświetl" icon="ui-icon-search" onclick="PF('nowy').show();" ajax="true" action="#{zlecenieListaController.initWyswietl}" update=":DialogForm" disabled="#{zlecenieListaController.zaznaczony==null}" immediate="true"/>
+					<p:commandButton value="Usuń" icon="ui-icon-trash" ajax="true" action="#{zlecenieListaController.remove()}" update="@form" disabled="#{zlecenieListaController.zaznaczony==null}" /> 
 	
-	</h:form>
+				</f:facet>
+			</p:toolbar>
+			<p:dataTable style="width:75%; margin:0 auto" id="zlecenieLista" value="#{zlecenieListaController.list}" var="zlecenie" selectionMode="single" selection="#{zlecenieListaController.zaznaczony}" rowKey="#{zlecenie.id}">	
+				
+				<p:ajax event="rowSelect" update="ZlecenieForm:toolbar"/>
+				<p:ajax event="rowUnselect" update="ZlecenieForm:toolbar"/>
+				
+				<p:column headerText="ID"> 
+					<h:outputText value="#{zlecenie.id}" /> 
+				</p:column>
+				
+				<p:column headerText="Numer"> 
+					<h:outputText value="#{zlecenie.numerZlecenia}" /> 
+				</p:column>
+				
+				<p:column headerText="Zleceniodawca"> 
+					<h:outputText value="#{zlecenie.zleceniodawca.nazwa}" /> 
+				</p:column>
+				
+				<p:column headerText="Ubezpieczyciel">
+					<h:outputText value="#{zlecenie.ubezpieczyciel.nazwa}" />
+				</p:column>
+				
+				<p:column headerText="Alias">
+					<h:outputText value="#{zlecenie.alias}" />
+				</p:column>
+				
+				<p:column headerText="Status">
+					<h:outputText value="#{zlecenie.status}" />
+				</p:column>
+				
+				<p:column headerText="Stawka">
+					<h:outputText value="#{zlecenie.stawka}" />
+				</p:column>
+			</p:dataTable>
 		
-		<p:dialog focus="DialogForm:numerZlecenia" widgetVar="nowy" height="500" width="1000" header="Zlecenie" modal="true" showEffect="puff" hideEffect="clip">
-		<h:form id="DialogForm" >
-			<p:messages></p:messages>
-			<h:inputHidden value="#{zlecenieListaController.sukces}" id="operacja" />
-			<table style="font-size: 11px;" width="100%" cellpadding="5" cellspacing="5" border="0" >
-				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td colspan="2">
-						<p:outputLabel value="Data otrzymania"></p:outputLabel>
-					</td>
+		</h:form>
+			
+			<p:dialog focus="DialogForm:numerZlecenia" widgetVar="nowy" height="500" width="1000" header="Zlecenie" modal="true" showEffect="puff" hideEffect="clip">
+			<h:form id="DialogForm" >
+				<p:messages></p:messages>
+				<h:inputHidden value="#{zlecenieListaController.sukces}" id="operacja" />
+				<table style="font-size: 11px;" width="100%" cellpadding="5" cellspacing="5" border="0" >
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td colspan="2">
+							<p:outputLabel value="Data otrzymania"></p:outputLabel>
+						</td>
+						
+						<td colspan="2">
+							<p:calendar value="#{zlecenieListaController.obiekt.dataOtrzymania}" pattern="dd.MM.yyyy"/>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2"><p:outputLabel value="ID zlecenia"/></td>
+						
+						<td><p:inputText id="id" value="#{zlecenieListaController.obiekt.id}" readonly="true"/></td>
+						<td><p:outputLabel value="Status"/></td>
+						<td><p:selectOneMenu value="#{zlecenieListaController.obiekt.statusEnum}"> 
+							<f:selectItem itemLabel="Nowy" itemValue="0" />
+							<f:selectItem itemLabel="W trakcie realizacji" itemValue="1"/>
+							<f:selectItem itemLabel="Wykonane" itemValue="2"/>
+						 </p:selectOneMenu> </td>
+						<td><p:outputLabel value="Ściezka"/></td>
+						<td colspan="2"><p:inputText readonly="true" value="#{zlecenieListaController.obiekt.sciezka}"/></td>
+						
+						<td colspan="2">
+							<p:outputLabel value="Data wykonania"></p:outputLabel>
+						</td>
+						
+						<td colspan="2">
+							<p:calendar  value="#{zlecenieListaController.obiekt.dataWykonania}"> </p:calendar>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td colspan="2">
+							<p:outputLabel value="Data wysłania"></p:outputLabel>
+						</td>
+						
+						<td colspan="2">
+							<p:calendar value="#{zlecenieListaController.obiekt.dataWyslania}"/>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="12"/>
+					</tr>
+					<tr>
+						<td colspan="2"><p:outputLabel value="Numer zlecenia"/> </td>
+						<td colspan="2"><p:inputText id="numerZlecenia" value="#{zlecenieListaController.obiekt.numerZlecenia}"/> </td>
+						
+						<td colspan="2"><p:outputLabel value="Ubezpieczyciel"/> </td>
+						<td colspan="2">
+							<p:selectOneMenu converter="UbezpieczycielConverter" value="#{zlecenieListaController.obiekt.ubezpieczyciel}">
+								<f:selectItem itemLabel="Wybierz" itemValue="#{null}" noSelectionOption="true"/>
+								<f:selectItems value="#{zlecenieListaController.ubezpieczycieleLista}" var="ubezpieczyciel" 
+								itemLabel="#{ubezpieczyciel.nazwa}" itemValue="#{ubezpieczyciel}"/>
+							</p:selectOneMenu> </td>
+						
+						<td colspan="2"><p:outputLabel value="Alias"/> </td>
+						<td colspan="2"><p:inputText value="#{zlecenieListaController.obiekt.alias}"/> </td>
+					</tr>
+					<tr>
+						<td colspan="2"><p:outputLabel value="Zleceniodawca"/> </td>
+						<td colspan="2">
+							<p:selectOneMenu converter="ZleceniodawcaConverter" value="#{zlecenieListaController.obiekt.zleceniodawca}">
+								<f:selectItem itemLabel="Wybierz" itemValue="#{null}" noSelectionOption="true"/>
+								<f:selectItems value="#{zlecenieListaController.zleceniodawcaLista}" var="zleceniodawca"
+								itemLabel="#{zleceniodawca.nazwa}" itemValue="#{zleceniodawca}"/>
+							</p:selectOneMenu> </td>
+						
+						<td colspan="2"><p:outputLabel value="Mail"/> </td>
+						<td colspan="2"><p:inputText value="#{zlecenieListaController.obiekt.mail}"/> </td>
+						
+						<td colspan="2"><p:outputLabel value="Stawka"/> </td>
+						<td colspan="2"><p:inputText value="#{zlecenieListaController.obiekt.stawka}"/> </td>
+					</tr>
+					<tr>
+						<td colspan="2"><p:outputLabel value="Opis"/> </td>
+						<td colspan="10"><p:inputTextarea autoResize="true" value="#{zlecenieListaController.obiekt.opis}"/>  </td>
+					</tr>
+					<tr>
+						<td colspan="12"/>
+					</tr>
+					<tr>
+						<td colspan="5"></td>
+						<td colspan="2"><p:outputLabel value="Dokumentacja"/> </td>
+						<td colspan="5"></td>
+					</tr>
+					<tr>
+						<td colspan="12"/>
+					</tr>
+					<tr>
+						<td colspan="12"/>
+					</tr>
+					<tr>
+						<td colspan="12">
+							<h:commandButton  value="Dodaj pliki" onclick="PF('pliki').show();return false;" />
+							<h:panelGroup id="pliki" layout="block">
+								<ui:remove>
+									<ul>
+									<ui:repeat value="#{zlecenieListaController.obiekt.dokumentacja}" var="dokumentacja">
+										<li><h:commandLink value="#{dokumentacja.nazwa} - #{dokumentacja.sciezka}"></h:commandLink> <p:commandLink style="margin-left:10px" action="#{zlecenieListaController.usunDokument(dokumentacja.nazwa)}" value="Usuń" ajax="true" process="@this" update="DialogForm:pliki"/></li>
+									</ui:repeat>
+									</ul>
+								</ui:remove>
+								<h:panelGrid columns="5" cellpadding="10" cellspacing="10">
+									<h:panelGrid columns="1">
+									<p:commandLink onclick="PF('listaPlikow').show();" execute="@none" update=":listFiles"   >
+										<h:graphicImage name="folder_image.png" library="images"/>
+									</p:commandLink>
+									<h:outputText value="Liczba #{zlecenieListaController.imagesCount}"  />
+									</h:panelGrid>
+								</h:panelGrid>	
+							</h:panelGroup>
+						</td>
+					</tr>		
+				</table>
+				<h:panelGrid columns="2">
+					<p:commandButton id="dodaj" value="Dodaj" ajax="true" action="#{zlecenieListaController.create}" update="@form :ZlecenieForm:zlecenieLista" rendered="#{zlecenieListaController.dodawanie}" oncomplete=" if(document.getElementById('DialogForm:operacja').value=='true'){PF('nowy').hide();};"> </p:commandButton>
+					<p:commandButton id="anuluj" value="Anuluj" ajax="true" rendered="#{zlecenieListaController.dodawanie}" onclick="PF('nowy').hide();" > 
+						<p:ajax resetValues="true" update="@form :ZlecenieForm"></p:ajax>
+					</p:commandButton>
+					<p:commandButton value="Zapisz" action="#{zlecenieListaController.save}" update=":ZlecenieForm @form" rendered="#{zlecenieListaController.edycja}" oncomplete="if(document.getElementById('DialogForm:operacja').value=='true'){PF('nowy').hide();};"/>
+	    			<p:commandButton value="Zamknij" onclick="PF('nowy').hide();return false;" rendered="#{zlecenieListaController.wyswietlanie || zlecenieListaController.edycja}" />
+				</h:panelGrid>
+			</h:form>
+			
+		</p:dialog>
+		<p:dialog widgetVar="pliki" height="500" width="800" header="Dodaj załączniki" modal="true" showEffect="puff" hideEffect="clip">
+			<h:form id="fileUpload" enctype="multipart/form-data">
+				<p:fileUpload fileUploadListener="#{zlecenieListaController.handleFileUpload}" multiple="true" update=":DialogForm:pliki"/>			
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog widgetVar="listaPlikow" height="500" width="1000" header="Lista załączników" showEffect="puff" hideEffect="clip">
+			<h:form id="listFiles">
+				<p:commandButton action="#{zlecenieListaController.usunWszystkieDokumenty()}" value="Usuń wszystkie" ajax="true" process="@this" update="@form :DialogForm:pliki" />
+				<p:dataGrid var="plik" value="#{zlecenieListaController.obiekt.dokumentacja}" columns="6" layout="grid"
+	        			rows="12" paginator="true" id="cars" paginatorPosition="bottom"
+	        			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+	        			rowsPerPageTemplate="6,12,16">
 					
-					<td colspan="2">
-						<p:calendar value="#{zlecenieListaController.obiekt.dataOtrzymania}" pattern="dd.MM.yyyy"/>
-					</td>
-				</tr>
-				<tr>
-					<td colspan="2"><p:outputLabel value="ID zlecenia"/></td>
-					
-					<td><p:inputText id="id" value="#{zlecenieListaController.obiekt.id}" readonly="true"/></td>
-					<td><p:outputLabel value="Status"/></td>
-					<td><p:selectOneMenu value="#{zlecenieListaController.obiekt.statusEnum}"> 
-						<f:selectItem itemLabel="Nowy" itemValue="0" />
-						<f:selectItem itemLabel="W trakcie realizacji" itemValue="1"/>
-						<f:selectItem itemLabel="Wykonane" itemValue="2"/>
-					 </p:selectOneMenu> </td>
-					<td><p:outputLabel value="Ściezka"/></td>
-					<td colspan="2"><p:inputText readonly="true" value="#{zlecenieListaController.obiekt.sciezka}"/></td>
-					
-					<td colspan="2">
-						<p:outputLabel value="Data wykonania"></p:outputLabel>
-					</td>
-					
-					<td colspan="2">
-						<p:calendar  value="#{zlecenieListaController.obiekt.dataWykonania}"> </p:calendar>
-					</td>
-				</tr>
-				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td colspan="2">
-						<p:outputLabel value="Data wysłania"></p:outputLabel>
-					</td>
-					
-					<td colspan="2">
-						<p:calendar value="#{zlecenieListaController.obiekt.dataWyslania}"/>
-					</td>
-				</tr>
-				<tr>
-					<td colspan="12"/>
-				</tr>
-				<tr>
-					<td colspan="2"><p:outputLabel value="Numer zlecenia"/> </td>
-					<td colspan="2"><p:inputText id="numerZlecenia" value="#{zlecenieListaController.obiekt.numerZlecenia}"/> </td>
-					
-					<td colspan="2"><p:outputLabel value="Ubezpieczyciel"/> </td>
-					<td colspan="2">
-						<p:selectOneMenu converter="UbezpieczycielConverter" value="#{zlecenieListaController.obiekt.ubezpieczyciel}">
-							<f:selectItem itemLabel="Wybierz" itemValue="#{null}" noSelectionOption="true"/>
-							<f:selectItems value="#{zlecenieListaController.ubezpieczycieleLista}" var="ubezpieczyciel" 
-							itemLabel="#{ubezpieczyciel.nazwa}" itemValue="#{ubezpieczyciel}"/>
-						</p:selectOneMenu> </td>
-					
-					<td colspan="2"><p:outputLabel value="Alias"/> </td>
-					<td colspan="2"><p:inputText value="#{zlecenieListaController.obiekt.alias}"/> </td>
-				</tr>
-				<tr>
-					<td colspan="2"><p:outputLabel value="Zleceniodawca"/> </td>
-					<td colspan="2">
-						<p:selectOneMenu converter="ZleceniodawcaConverter" value="#{zlecenieListaController.obiekt.zleceniodawca}">
-							<f:selectItem itemLabel="Wybierz" itemValue="#{null}" noSelectionOption="true"/>
-							<f:selectItems value="#{zlecenieListaController.zleceniodawcaLista}" var="zleceniodawca"
-							itemLabel="#{zleceniodawca.nazwa}" itemValue="#{zleceniodawca}"/>
-						</p:selectOneMenu> </td>
-					
-					<td colspan="2"><p:outputLabel value="Mail"/> </td>
-					<td colspan="2"><p:inputText value="#{zlecenieListaController.obiekt.mail}"/> </td>
-					
-					<td colspan="2"><p:outputLabel value="Stawka"/> </td>
-					<td colspan="2"><p:inputText value="#{zlecenieListaController.obiekt.stawka}"/> </td>
-				</tr>
-				<tr>
-					<td colspan="2"><p:outputLabel value="Opis"/> </td>
-					<td colspan="10"><p:inputTextarea autoResize="true" value="#{zlecenieListaController.obiekt.opis}"/>  </td>
-				</tr>
-				<tr>
-					<td colspan="12"/>
-				</tr>
-				<tr>
-					<td colspan="5"></td>
-					<td colspan="2"><p:outputLabel value="Dokumentacja"/> </td>
-					<td colspan="5"></td>
-				</tr>
-				<tr>
-					<td colspan="12"/>
-				</tr>
-				<tr>
-					<td colspan="12"/>
-				</tr>
-				<tr>
-					<td colspan="12">
-						<h:commandButton  value="Dodaj pliki" onclick="PF('pliki').show();return false;" />
-						<h:panelGroup id="pliki" layout="block">
-							<ui:remove>
-								<ul>
-								<ui:repeat value="#{zlecenieListaController.obiekt.dokumentacja}" var="dokumentacja">
-									<li><h:commandLink value="#{dokumentacja.nazwa} - #{dokumentacja.sciezka}"></h:commandLink> <p:commandLink style="margin-left:10px" action="#{zlecenieListaController.usunDokument(dokumentacja.nazwa)}" value="Usuń" ajax="true" process="@this" update="DialogForm:pliki"/></li>
-								</ui:repeat>
-								</ul>
-							</ui:remove>
-							<h:panelGrid columns="5" cellpadding="10" cellspacing="10">
-								<h:panelGrid columns="1">
-								<p:commandLink onclick="PF('listaPlikow').show();" execute="@none" update=":listFiles"   >
-									<h:graphicImage name="folder_image.png" library="images"/>
-								</p:commandLink>
-								<h:outputText value="Liczba #{zlecenieListaController.imagesCount}"  />
-								</h:panelGrid>
-							</h:panelGrid>
-							
-							
+					<h:panelGrid columns="1">
+						<h:panelGroup>
+							<ui:fragment rendered="#{plik.obrazek and plik.tymczasowy}">
+								<img src="obrazek.ximage?filename=#{plik.nazwaTymczsowegoPliku}" width="128" height="128" />
+							</ui:fragment>
+							<ui:fragment rendered="#{plik.obrazek and not plik.tymczasowy}">
+								<img src="obrazek.ximage?file=#{plik.id}" width="128" height="128" />
+							</ui:fragment>
+							<h:graphicImage library="images" name="dokument.png" rendered="#{!plik.obrazek}" width="128" height="128" />
 						</h:panelGroup>
-					</td>
-				</tr>
-				
-			</table>
-			<h:panelGrid columns="2">
-				<p:commandButton id="dodaj" value="Dodaj" ajax="true" action="#{zlecenieListaController.create}" update="@form :ZlecenieForm:zlecenieLista" rendered="#{zlecenieListaController.dodawanie}" oncomplete=" if(document.getElementById('DialogForm:operacja').value=='true'){PF('nowy').hide();};"> </p:commandButton>
-				<p:commandButton id="anuluj" value="Anuluj" ajax="true" rendered="#{zlecenieListaController.dodawanie}" onclick="PF('nowy').hide();" > 
-					<p:ajax resetValues="true" update="@form :ZlecenieForm"></p:ajax>
-				</p:commandButton>
-				<p:commandButton value="Zapisz" action="#{zlecenieListaController.save}" update=":ZlecenieForm @form" rendered="#{zlecenieListaController.edycja}" oncomplete="if(document.getElementById('DialogForm:operacja').value=='true'){PF('nowy').hide();};"/>
-    			<p:commandButton value="Zamknij" onclick="PF('nowy').hide();return false;" rendered="#{zlecenieListaController.wyswietlanie || zlecenieListaController.edycja}" />
-			</h:panelGrid>
-		</h:form>
-		
-	</p:dialog>
-	<p:dialog widgetVar="pliki" height="500" width="800" header="Dodaj załączniki" modal="true" showEffect="puff" hideEffect="clip">
-		<h:form id="fileUpload" enctype="multipart/form-data">
-			<p:fileUpload fileUploadListener="#{zlecenieListaController.handleFileUpload}" multiple="true" update=":DialogForm:pliki"/>			
-		</h:form>
-	</p:dialog>
-	
-	<p:dialog widgetVar="listaPlikow" height="500" width="1000" header="Lista załączników" showEffect="puff" hideEffect="clip">
-		<h:form id="listFiles">
-			<p:commandButton action="#{zlecenieListaController.usunWszystkieDokumenty()}" value="Usuń wszystkie" ajax="true" process="@this" update="@form :DialogForm:pliki" />
-			<p:dataGrid var="plik" value="#{zlecenieListaController.obiekt.dokumentacja}" columns="6" layout="grid"
-        			rows="12" paginator="true" id="cars" paginatorPosition="bottom"
-        			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-        			rowsPerPageTemplate="6,12,16">
-				
-				<h:panelGrid columns="1">
-					<h:panelGroup>
-						<ui:fragment rendered="#{plik.obrazek and plik.tymczasowy}">
-							<img src="obrazek.ximage?filename=#{plik.nazwaTymczsowegoPliku}" width="128" height="128" />
-						</ui:fragment>
-						<ui:fragment rendered="#{plik.obrazek and not plik.tymczasowy}">
-							<img src="obrazek.ximage?file=#{plik.id}" width="128" height="128" />
-						</ui:fragment>
-						<h:graphicImage library="images" name="dokument.png" rendered="#{!plik.obrazek}" width="128" height="128" />
-					</h:panelGroup>
-					<h:panelGrid columns="2">
-						<h:outputText value="#{plik.nazwa}" />
-						<p:commandLink style="margin-left:3px" action="#{zlecenieListaController.usunDokument(plik.nazwa)}" value="Usuń" ajax="true" process="@this" update="@form :DialogForm:pliki"/>
-					</h:panelGrid>
-				</h:panelGrid>	
-					
-					
-				
-			</p:dataGrid>
-		</h:form>
-	</p:dialog>
+						<h:panelGrid columns="2">
+							<h:outputText value="#{plik.nazwa}" />
+							<p:commandLink style="margin-left:3px" action="#{zlecenieListaController.usunDokument(plik.nazwa)}" value="Usuń" ajax="true" process="@this" update="@form :DialogForm:pliki"/>
+						</h:panelGrid>
+					</h:panelGrid>		
+				</p:dataGrid>
+			</h:form>
+		</p:dialog>
+	</div>
+	<div id="footer">
+		<h:outputText value="Copyright 2015 @ Sebastian Liwanios" />
+	</div>
 </body> 
 </html>
