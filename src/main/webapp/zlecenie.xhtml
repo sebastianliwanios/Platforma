@@ -12,9 +12,9 @@
 	<div id="header">
 		<table width="100%" cellpadding="10">
 			<tr>
-				<td align="center" width="130"><p:commandButton value="Strona główna" action="index2.hxtml"/> </td>
+				<td align="center" width="130"><p:button value="Strona główna" outcome="index2.hxtml"/> </td>
 				<td align="center" width="130"><h3><h:outputText value="Lista zleceń" /></h3></td> 
-				<td align="center" width="130"><p:commandButton value="Powrót" onclick="javascript:history.go(-1)"/> </td>
+				<td align="center" width="130"><p:commandButton value="Powrót" onclick="javascript:history.go(-1); return false;"/> </td>
 			</tr>
 		</table>
 	</div>

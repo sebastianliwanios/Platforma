@@ -4,11 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
-import javax.faces.bean.ViewScoped;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -22,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.sebastian.platforma.domain.Dokumentacja;
-import com.sebastian.platforma.domain.Zlecenie;
 
 
 public class ImageServices extends HttpServlet{
@@ -81,6 +76,7 @@ public class ImageServices extends HttpServlet{
 
 		File image = new File(pathFile);
 		BufferedImage bi = ImageIO.read(image);
+		
 		OutputStream os = resp.getOutputStream();
 		ImageIO.write(bi, "jpg", os);
 		

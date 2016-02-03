@@ -1,6 +1,7 @@
 package com.sebastian.platforma.services;
 
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -15,6 +16,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import javax.imageio.ImageIO;
+
+import net.coobird.thumbnailator.Thumbnailator;
+import net.coobird.thumbnailator.Thumbnails;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +82,8 @@ public class ZlecenieServiceImpl extends AbstractCRUDService<Zlecenie, Integer> 
 				try {
 					logger.debug("plik tymczasowy to {} oraz docelowy to: {}",tymczasowy, plikDocelowy);
 					Files.copy(tymczasowy.toPath(), plikDocelowy.toPath(), StandardCopyOption.REPLACE_EXISTING); // kopiujemy pliki z folderu tymczasowego do docelowego
+					if(d.isObrazek())
+						zapiszObrazek(plikDocelowy);
 				} catch (IOException e) {
 					logger.error("Błąd kopiowania plików", e);
 					throw new ServiceException("BladKopiowaniaPlikow");
@@ -95,13 +103,14 @@ public class ZlecenieServiceImpl extends AbstractCRUDService<Zlecenie, Integer> 
 				String sciezkaBazowaZip = "C:"+File.separator+"Platforma"+File.separator+"ZipFiles"+File.separator+format.format(zlecenie.getDataOtrzymania())
 					+File.separator+zlecenie.getZleceniodawca().getNazwa()+File.separator; 
 	
-				String sciezkaZip = sciezkaBazowaZip+zlecenie.getNumerZlecenia()+"_"
-						+zlecenie.getUbezpieczyciel().getNazwa()+"_"+zlecenie.getAlias();
+				String nazwaPliku = sciezkaBazowaZip+zlecenie.getNumerZlecenia()+"_"
+						+zlecenie.getUbezpieczyciel().getNazwa()+"_"+zlecenie.getAlias()+".zip";
 				
 				try {
 					File fileBazowy = new File(sciezkaBazowaZip);// tworzymy sciezke bazowa w ktorej bedziemy zapisywac pliki
-					File file = new File(sciezkaZip+".zip"); // tworzymy folder jak ma sie nazywac gdzie zapisane zostana pliki
+					File file = new File(nazwaPliku); // tworzymy folder jak ma sie nazywac gdzie zapisane zostana pliki
 					logger.debug("Sciezka file: {}", file.getAbsolutePath());
+					zlecenie.setSciezkaZip(nazwaPliku);
 					boolean isZapisany = fileBazowy.mkdirs();
 					if (!isZapisany){
 						logger.debug("Nie zapisano archiwum");
@@ -145,6 +154,42 @@ public class ZlecenieServiceImpl extends AbstractCRUDService<Zlecenie, Integer> 
 			}
 			return super.utworz(zlecenie);
 		}
+	
+		private void zapiszObrazek(File plik)
+		{
+			try
+			{
+				logger.debug("zapiszObrazek(plik={})",plik);
+				BufferedImage obrazek = ImageIO.read(plik);
+				int szerokosc=obrazek.getWidth();
+				int wysokosc=obrazek.getHeight();
+				logger.debug("Rozdzielczosc obrazka {} na {}",szerokosc,wysokosc);
+			
+				if(!(szerokosc>=1600 && wysokosc>=1200))
+				{
+					logger.debug("Pomijam zmiane rozdzielczosci obrazka");
+					return;
+				}
+				
+				String rozszerzenie=plik.getName().substring(plik.getName().lastIndexOf(".")+1);
+				logger.debug("Rozszerzenie pliku {}",rozszerzenie);
+				if("jpg".equalsIgnoreCase(rozszerzenie))
+				{
+					Thumbnails.of(obrazek).size(1600, 1200).outputFormat("jpg").allowOverwrite(true).toFile(plik);
+					logger.debug("Zmieniono rozdzielczosc obrazka");
+				}
+				else if("png".equalsIgnoreCase(rozszerzenie))
+				{
+					Thumbnails.of(obrazek).size(1600, 1200).outputFormat("png").allowOverwrite(true).toFile(plik);
+					logger.debug("Zmieniono rozdzielczosc obrazka");
+				}
+			}
+			catch(IOException e)
+			{
+				logger.error("Nie udało się zmienic rozmiaru obrazka ",e);
+			}
+		 
+		}
 		
 		@Transactional
 		@Override
@@ -177,6 +222,8 @@ public class ZlecenieServiceImpl extends AbstractCRUDService<Zlecenie, Integer> 
 					try
 					{
 						Files.copy(tymczasowy.toPath(), plikDocelowy.toPath(), StandardCopyOption.REPLACE_EXISTING);
+						if(d.isObrazek())
+							zapiszObrazek(plikDocelowy);
 					}catch(IOException e)
 					{
 						logger.error("Błąd kopiowania plików", e);
@@ -200,16 +247,22 @@ public class ZlecenieServiceImpl extends AbstractCRUDService<Zlecenie, Integer> 
 				String sciezkaBazowaZip = "C:"+File.separator+"Platforma"+File.separator+"ZipFiles"+File.separator+format.format(encja.getDataOtrzymania())
 								+File.separator+encja.getZleceniodawca().getNazwa()+File.separator; 
 				
-				String sciezkaZip = sciezkaBazowaZip+encja.getNumerZlecenia()+"_"
-									+encja.getUbezpieczyciel().getNazwa()+"_"+encja.getAlias();
+				String nazwaArchiwumZip = sciezkaBazowaZip+encja.getNumerZlecenia()+"_"
+									+encja.getUbezpieczyciel().getNazwa()+"_"+encja.getAlias()+".zip";
 				
 				try {
 					File fileBazowy = new File(sciezkaBazowaZip);// tworzymy sciezke bazowa w ktorej bedziemy zapisywac pliki
-					File file = new File(sciezkaZip+".zip"); // tworzymy folder jak ma sie nazywac gdzie zapisane zostana pliki
+					File file = new File(nazwaArchiwumZip); // tworzymy folder jak ma sie nazywac gdzie zapisane zostana pliki
 					//File fileIstniejacy = new File(encja.getZipSciezka());
 					//logger.debug("Sciezka do archiwum {} ",fileIstniejacy );
 					//boolean isDeleted = fileIstniejacy.delete();
-				
+					File stareArchiwum = new File(encja.getSciezkaZip());
+					if (stareArchiwum.delete()) {
+						logger.debug("Skasowano stare archiwum {}",stareArchiwum.getAbsolutePath());
+					}
+					else {
+						logger.error("Nie udało się usunąć starego archiwum {}", stareArchiwum.getAbsolutePath());
+					}
 					logger.debug("Plik o nazwie {}",file.getName());
 					logger.debug("Sciezka file: {}", file.getAbsolutePath());
 					//logger.debug("Czy plik zostal skasowany ? {}",isDeleted);
@@ -223,7 +276,7 @@ public class ZlecenieServiceImpl extends AbstractCRUDService<Zlecenie, Integer> 
 						
 					for (Dokumentacja d:encja.getDokumentacja()) { // przeszukujemy petlą całą dokumentacje 
 						File f = new File(d.getSciezka()); // wskazujemy sciezke gdzie znajduja sie pliki, ktore maja byc skompresowane
-						System.out.println(d.getNazwa());
+						logger.debug(d.getNazwa());
 						FileInputStream fi = new FileInputStream(f);
 						bis = new BufferedInputStream(fi, 2048);
 						ZipEntry entry = new ZipEntry(f.getName());
@@ -236,17 +289,16 @@ public class ZlecenieServiceImpl extends AbstractCRUDService<Zlecenie, Integer> 
 							
 						bis.close();
 						fi.close();
-						
-					zos.close();
-						
-					logger.debug("pomyślnie zapisano pliki");
+	
+						logger.debug("pomyślnie zapisano pliki");
 					}
+					zos.close();
 				} catch (FileNotFoundException e) {
-					logger.debug("Nie odnaleziono pliku ");
-					e.printStackTrace();
+					logger.debug("Nie odnaleziono pliku ",e);
+					
 				} catch (IOException e) {
-					logger.debug("Nie zapisano pliku");
-					e.printStackTrace();
+					logger.debug("Nie zapisano pliku",e);
+					
 				} catch (Exception e) {
 					logger.error("Error unknown",e);
 				}	

@@ -96,6 +96,9 @@ public class Zlecenie implements Serializable{
 	
 	@Transient //nie zapisuje tego do bazy danych
 	private List<Plik> plikiTymczasowe;
+	
+	@Size(max=512, message="maksymalna dlugosc sciezki archiwum to {max} znaków")
+	private String sciezkaZip;
 
 	public Zlecenie() {}
 
@@ -258,12 +261,9 @@ public class Zlecenie implements Serializable{
 			return status.ordinal();
 	}
 	
-	public void setStatusEnum(int ordinal)
+	public void setStatusEnum(int ordinal) //ustawienie status zlecenia wzgledem numeru (kazdy status ma swoj numer)
 	{
-		System.out.println("Ordinal="+ordinal);
-		System.out.println(StatusZlecenia.values());
 		this.status=StatusZlecenia.values()[ordinal];
-		System.out.println(status);
 	}
 
 	public List<Plik> getPlikiTymczasowe() {
@@ -282,6 +282,12 @@ public class Zlecenie implements Serializable{
 		this.dataModyfikacji = dataModyfikacji;
 	}
 	
-	
+	public String getSciezkaZip() {
+		return sciezkaZip;
+	}
+
+	public void setSciezkaZip(String sciezkaZip) {
+		this.sciezkaZip = sciezkaZip;
+	}
 	
 }
