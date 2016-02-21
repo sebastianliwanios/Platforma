@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      > 
+
+<h:head></h:head> 
+<body> 
+	<h:form>
+		<p:dataTable style="width:75%; margin:0 auto" id="zlecenieLista" value="#{zleceniaListaTestController.data}" lazy="true"
+		 var="zlecenie" paginator="true"
+                rows="1"
+                paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                rowsPerPageTemplate="1,2,100"
+                paginatorPosition="bottom"
+                >	
+				
+				
+				
+				<p:column headerText="ID"> 
+					<h:outputText value="#{zlecenie.id}" /> 
+				</p:column>
+				
+				<p:column headerText="Numer" sortBy="#{zlecenie.numerZlecenia}" filterBy="#{zlecenie.numerZlecenia}"> 
+					<h:outputText value="#{zlecenie.numerZlecenia}" /> 
+				</p:column>
+				
+				<p:column headerText="Zleceniodawca" sortBy="#{zlecenie.zleceniodawca.nazwa}" filterBy="#{zlecenie.zleceniodawca.nazwa}"> 
+					<h:outputText value="#{zlecenie.zleceniodawca.nazwa}" /> 
+				</p:column>
+				
+				<p:column headerText="Ubezpieczyciel">
+					<h:outputText value="#{zlecenie.ubezpieczyciel.nazwa}" />
+				</p:column>
+				
+				<p:column headerText="Alias">
+					<h:outputText value="#{zlecenie.alias}" />
+				</p:column>
+				
+				<p:column headerText="Status">
+					<h:outputText value="#{zlecenie.status}" />
+				</p:column>
+				
+				<p:column headerText="Stawka">
+					<h:outputText value="#{zlecenie.stawka}" />
+				</p:column>
+			</p:dataTable>
+	</h:form>
+</body> 
+</html>

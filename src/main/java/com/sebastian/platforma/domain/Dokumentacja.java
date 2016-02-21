@@ -24,6 +24,7 @@ public class Dokumentacja implements Serializable{
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	
 	private Long id;
 	
 	@NotNull

@@ -170,6 +170,14 @@
 		<groupId>net.coobird</groupId>
 		<artifactId>thumbnailator</artifactId>
 		</dependency>
+  	<dependency>
+  		<groupId>org.apache.poi</groupId>
+  		<artifactId>poi</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>javax.mail</groupId>
+  		<artifactId>mail</artifactId>
+  	</dependency>
   </dependencies>
   
   <dependencyManagement>
@@ -272,7 +280,17 @@
 			<artifactId>thumbnailator</artifactId>
 			<version>0.4.8</version>
 		</dependency>
-  		
+
+  		<dependency>
+  			<groupId>org.apache.poi</groupId>
+  			<artifactId>poi</artifactId>
+  			<version>3.13</version>
+  		</dependency>
+  		<dependency>
+  			<groupId>javax.mail</groupId>
+  			<artifactId>mail</artifactId>
+  			<version>1.4.7</version>
+  		</dependency>
   	</dependencies>
   </dependencyManagement>
 </project>

@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"> 
+
+<h:head>
+	<h:outputStylesheet library="css" name="style.css"/>
+</h:head> 
+<body> 
+	<div id="header">
+		<table width="100%" cellspacing="10">
+			<tr>
+				<td align="center" width="130"><p:commandButton value="Strona główna" action="index2.hxtml"/> </td>
+				<td align="center" width="130"><h3><h:outputText value="Konta email" /></h3></td> 
+				<td align="center" width="130"><p:commandButton value="Powrót" onclick="javascript:history.go(-1)"/> </td>
+			</tr>
+		</table>
+	</div>
+	
+	<div id="navigation">
+		<h:form id="kontoEmailForm">
+			<p:messages globalOnly="true">
+			
+			</p:messages>
+			<p:toolbar id="toolbar">
+				<f:facet name="left">
+					<p:commandButton  value="Nowy" icon="ui-icon-document" onclick="PF('nowy').show();" ajax="true"  action="#{kontoMailoweController.initNowy}" update=":KontoForm"/>
+					<p:commandButton  value="Edycja" icon="ui-icon-pencil" onclick="PF('nowy').show();" ajax="true" action="#{kontoMailoweController.initEdycja}" update=":KontoForm" disabled="#{kontoMailoweController.zaznaczony==null}"/>
+					<p:commandButton  value="Wyświetl" icon="ui-icon-search" onclick="PF('nowy').show();" ajax="true" action="#{kontoMailoweController.initWyswietl}" update=":KontoForm" disabled="#{kontoMailoweController.zaznaczony==null}"/>
+					<p:commandButton  value="Usuń" icon="ui-icon-trash" action="#{kontoMailoweController.remove}" update="@form" disabled="#{kontoMailoweController.zaznaczony==null}"/>
+				</f:facet>	
+			</p:toolbar>
+			<p:dataTable id="kontaEmailList" value="#{kontoMailoweController.list}" var="konto" selectionMode="single" selection="#{kontoMailoweController.zaznaczony}" rowKey="#{konto.id}" style="margin-top: 10px;">
+				<p:ajax event="rowSelect"  update="kontoEmailForm:toolbar" /> <ui:remove><!-- po wybraniu wiersza odświeza sie forularz a dokladnie toolbar --></ui:remove>
+	        	<p:ajax event="rowUnselect"  update="kontoEmailForm:toolbar" />
+				<p:column headerText="id" >
+					<h:outputText value="#{konto.id}" />
+				</p:column>
+				<p:column headerText="Adres email">
+					<h:outputText value="#{konto.mail}" />
+				</p:column>
+				<p:column headerText="Serwer SMTP">
+					<h:outputText value="#{konto.hostSMTP}" />
+				</p:column>
+				<p:column headerText="Port SMTP">
+					<h:outputText value="#{konto.portSMTP}" />
+				</p:column>
+				<p:column headerText="Wartość starttls">
+					<h:outputText value="Tak" rendered="#{konto.starttls}"/>
+					<h:outputText value="Nie" rendered="#{!konto.starttls}"/>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+		<p:dialog modal="true" header="Konto mailowe" widgetVar="nowy" height="400" width="700" showEffect="explode">
+	    	<h:form id="KontoForm">
+	    		<h:inputHidden id="operacja" value="#{kontoMailoweController.sukces}"  />
+	    		<h:panelGrid columns="3">
+	    			<p:outputLabel value="Mail: " for="mail"/>
+	    			<p:inputText id="mail" value="#{kontoMailoweController.obiekt.mail}" readonly="#{kontoMailoweController.wyswietlanie}"/>
+	    			<p:message for="mail"/>
+	    			
+	    			<p:outputLabel value="Serwer SMTP: " for="smtp"/>
+	    			<p:inputText id="smtp" value="#{kontoMailoweController.obiekt.hostSMTP}" readonly="#{kontoMailoweController.wyswietlanie}"/>
+	    			<p:message for="smtp"/>
+	    			
+	    			<p:outputLabel value="Port SMTP: " for="port"/>
+	    			<p:inputText id="port" value="#{kontoMailoweController.obiekt.portSMTP}" readonly="#{kontoMailoweController.wyswietlanie}"/>
+	    			<p:message for="port"/>
+	    			
+	    			<p:outputLabel value="Hasło: " for="haslo"/>
+	    			<p:password id="haslo" value="#{kontoMailoweController.obiekt.haslo}" readonly="#{kontoMailoweController.wyswietlanie}"/>
+	    			<p:message for="haslo"/>
+	    			
+	    			<p:outputLabel value="Start TLS " for="tls"/>
+	    			<p:selectBooleanCheckbox id="tls" value="#{kontoMailoweController.obiekt.starttls}" readonly="#{kontoMailoweController.wyswietlanie}"/>
+	    			<p:message for="tls"/>
+	    			
+	    		</h:panelGrid>
+	    		<h:panelGrid columns="2">
+	    			<p:commandButton value="Zatwierdź" action="#{kontoMailoweController.create}" update=":kontoEmailForm @form" rendered="#{kontoMailoweController.dodawanie}" oncomplete="if(document.getElementById('KontoForm:operacja').value=='true'){PF('nowy').hide();};"/>
+	    			<p:commandButton value="Anuluj" onclick="PF('nowy').hide();return false;" rendered="#{kontoMailoweController.dodawanie or kontoMailoweController.edycja}"/>
+	    			<p:commandButton value="Zapisz" action="#{kontoMailoweController.save}" update=":kontoEmailForm @form" rendered="#{kontoMailoweController.edycja}" oncomplete="if(document.getElementById('KontoForm:operacja').value=='true'){PF('nowy').hide();};"/>
+	    			<p:commandButton value="Zamknij" onclick="PF('nowy').hide();return false;" rendered="#{kontoMailoweController.wyswietlanie}"/>
+	    			<ui:remove>onclick->return false; blokuje dalssze wykonywanie programu(javascript - nie przetwarza jaxa) , onclick po nacisnieciu przycisku albo howa sie menu albo sie pojawia
+	    			; rendered - jezeli boolean jest true to bedzie przycisk renderowany jeszeli false to nie; oncomplete - jezeli bedzie true to przycisk nie bedzie renderowany</ui:remove>
+	    		</h:panelGrid>
+	    	</h:form>
+		</p:dialog>
+	</div>
+	
+	<div id="footer">
+		<h:outputText value="Copyright 2015 @ Sebastian Liwanios" />
+	</div>
+
+</body> 
+</html>

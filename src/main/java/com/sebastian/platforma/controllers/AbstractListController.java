@@ -2,11 +2,13 @@ package com.sebastian.platforma.controllers;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.faces.application.FacesMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 
 
@@ -89,7 +91,11 @@ public abstract class AbstractListController<T extends Serializable,K extends Se
 					getService().utworz(nowy);
 			setSukces(true);
 			nowy=null;
-			JSFUtility.addGlobalMessage(FacesMessage.SEVERITY_INFO,JSFUtility.getResourceBundle(resourceBundleName).getString(CREATE_MSG));
+			ResourceBundle resourceBundle=JSFUtility.getResourceBundle(resourceBundleName);
+			if(resourceBundle==null)
+				logger.error("Nie odnaleziono pliku properties dla klucza {}",resourceBundle);
+			else
+				JSFUtility.addGlobalMessage(FacesMessage.SEVERITY_INFO,resourceBundle.getString(CREATE_MSG));
 		} catch (ServiceException e) {
 			handleMessage(e);
 		}
@@ -102,7 +108,11 @@ public abstract class AbstractListController<T extends Serializable,K extends Se
 		try {
 			getService().zapisz(zaznaczony);
 			setSukces(true);
-			JSFUtility.addGlobalMessage(FacesMessage.SEVERITY_INFO,JSFUtility.getResourceBundle(resourceBundleName).getString(SAVE_MSG));
+			ResourceBundle resourceBundle=JSFUtility.getResourceBundle(resourceBundleName);
+			if(resourceBundle==null)
+				logger.error("Nie odnaleziono pliku properties dla klucza {}",resourceBundle);
+			else
+				JSFUtility.addGlobalMessage(FacesMessage.SEVERITY_INFO,resourceBundle.getString(SAVE_MSG));
 		} catch (ServiceException e) {
 			handleMessage(e);
 			
@@ -114,7 +124,11 @@ public abstract class AbstractListController<T extends Serializable,K extends Se
 	{
 		getService().usun(zaznaczony);
 		zaznaczony=null;
-		JSFUtility.addGlobalMessage(FacesMessage.SEVERITY_INFO, JSFUtility.getResourceBundle(resourceBundleName).getString(REMOVE_MSG));
+		ResourceBundle resourceBundle=JSFUtility.getResourceBundle(resourceBundleName);
+		if(resourceBundle==null)
+			logger.error("Nie odnaleziono pliku properties dla klucza {}",resourceBundle);
+		else
+			JSFUtility.addGlobalMessage(FacesMessage.SEVERITY_INFO, resourceBundle.getString(REMOVE_MSG));
 		return null;
 		
 	}

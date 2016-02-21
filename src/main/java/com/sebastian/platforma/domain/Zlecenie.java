@@ -34,6 +34,10 @@ public class Zlecenie implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
+	public static final String _ID="id";
+	public static final String _NUMER_ZLECENIA="numerZlecenia";
+	public static final String _ZLECENIODAWCA="zleceniodawca";
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
@@ -83,6 +87,10 @@ public class Zlecenie implements Serializable{
 		@Size(min=2, message="Alias nie moze być mniejszy od {min}")
 	})
 	private String alias;
+	
+	@NotNull
+	@Size(min=2, message="Pole musi zawierać conajmniej {min} znaków")
+	private String miejscowosc;
 	
 	@Size(max=200, message="Opis nie powinien zawierać więcej niz {max} znaków")
 	private String opis;
@@ -167,10 +175,11 @@ public class Zlecenie implements Serializable{
 
 	public String getNumerZlecenia() {
 		return numerZlecenia;
-	}
+	}	
 
 	public void setNumerZlecenia(String numerZlecenia) {
-		this.numerZlecenia = numerZlecenia;
+		String nowaNazwa = numerZlecenia.replace('/', '_');
+		this.numerZlecenia = nowaNazwa;
 	}
 
 	public Ubezpieczyciel getUbezpieczyciel() {
@@ -289,5 +298,15 @@ public class Zlecenie implements Serializable{
 	public void setSciezkaZip(String sciezkaZip) {
 		this.sciezkaZip = sciezkaZip;
 	}
+
+	public String getMiejscowosc() {
+		return miejscowosc;
+	}
+
+	public void setMiejscowosc(String miejscowosc) {
+		this.miejscowosc = miejscowosc;
+	}
+	
+	
 	
 }

@@ -16,6 +16,10 @@
 				<td align="center" width="130"><h3><h:outputText value="Lista zleceń" /></h3></td> 
 				<td align="center" width="130"><p:commandButton value="Powrót" onclick="javascript:history.go(-1); return false;"/> </td>
 			</tr>
+			<tr>
+				<td colspan="2" width="130"/>
+				<td align="center" width="130"><p:commandButton value="Zestawienie" action="#{zlecenieListaController.wygenerujPlikExcel}"/> </td>
+			</tr>
 		</table>
 	</div>
 	<div id="navigation">
@@ -56,6 +60,10 @@
 					<h:outputText value="#{zlecenie.alias}" />
 				</p:column>
 				
+				<p:column headerText="Miejscowość">
+					<h:outputText value="#{zlecenie.miejscowosc}" />
+				</p:column>
+				
 				<p:column headerText="Status">
 					<h:outputText value="#{zlecenie.status}" />
 				</p:column>
@@ -67,11 +75,11 @@
 		
 		</h:form>
 			
-			<p:dialog focus="DialogForm:numerZlecenia" widgetVar="nowy" height="500" width="1000" header="Zlecenie" modal="true" showEffect="puff" hideEffect="clip">
+			<p:dialog focus="DialogForm:numerZlecenia" widgetVar="nowy" height="800" width="1300" header="Zlecenie" modal="true" showEffect="puff" hideEffect="clip">
 			<h:form id="DialogForm" >
 				<p:messages></p:messages>
 				<h:inputHidden value="#{zlecenieListaController.sukces}" id="operacja" />
-				<table style="font-size: 11px;" width="100%" cellpadding="5" cellspacing="5" border="0" >
+				<table style="font-size: 13px;" width="100%" cellpadding="5" cellspacing="5" border="0" >
 					<tr>
 						<td></td>
 						<td></td>
@@ -79,18 +87,16 @@
 						<td></td>
 						<td></td>
 						<td></td>
-						<td></td>
-						<td></td>
-						<td colspan="2">
+						<td>
 							<p:outputLabel value="Data otrzymania"></p:outputLabel>
 						</td>
 						
-						<td colspan="2">
+						<td>
 							<p:calendar value="#{zlecenieListaController.obiekt.dataOtrzymania}" pattern="dd.MM.yyyy"/>
 						</td>
 					</tr>
 					<tr>
-						<td colspan="2"><p:outputLabel value="ID zlecenia"/></td>
+						<td><p:outputLabel value="ID zlecenia"/></td>
 						
 						<td><p:inputText id="id" value="#{zlecenieListaController.obiekt.id}" readonly="true"/></td>
 						<td><p:outputLabel value="Status"/></td>
@@ -100,13 +106,13 @@
 							<f:selectItem itemLabel="Wykonane" itemValue="2"/>
 						 </p:selectOneMenu> </td>
 						<td><p:outputLabel value="Ściezka"/></td>
-						<td colspan="2"><p:inputText readonly="true" value="#{zlecenieListaController.obiekt.sciezka}"/></td>
+						<td><p:inputText readonly="true" value="#{zlecenieListaController.obiekt.sciezka}"/></td>
 						
-						<td colspan="2">
+						<td>
 							<p:outputLabel value="Data wykonania"></p:outputLabel>
 						</td>
 						
-						<td colspan="2">
+						<td>
 							<p:calendar  value="#{zlecenieListaController.obiekt.dataWykonania}"> </p:calendar>
 						</td>
 					</tr>
@@ -117,71 +123,80 @@
 						<td></td>
 						<td></td>
 						<td></td>
-						<td></td>
-						<td></td>
-						<td colspan="2">
+						<td>
 							<p:outputLabel value="Data wysłania"></p:outputLabel>
 						</td>
 						
-						<td colspan="2">
+						<td>
 							<p:calendar value="#{zlecenieListaController.obiekt.dataWyslania}"/>
 						</td>
 					</tr>
 					<tr>
-						<td colspan="12"/>
+						<td colspan="8"/>
 					</tr>
 					<tr>
-						<td colspan="2"><p:outputLabel value="Numer zlecenia"/> </td>
-						<td colspan="2"><p:inputText id="numerZlecenia" value="#{zlecenieListaController.obiekt.numerZlecenia}"/> </td>
+						<td><p:outputLabel value="Numer zlecenia"/> </td>
+						<td><p:inputText id="numerZlecenia" value="#{zlecenieListaController.obiekt.numerZlecenia}"/> </td>
 						
-						<td colspan="2"><p:outputLabel value="Ubezpieczyciel"/> </td>
-						<td colspan="2">
-							<p:selectOneMenu converter="UbezpieczycielConverter" value="#{zlecenieListaController.obiekt.ubezpieczyciel}">
-								<f:selectItem itemLabel="Wybierz" itemValue="#{null}" noSelectionOption="true"/>
-								<f:selectItems value="#{zlecenieListaController.ubezpieczycieleLista}" var="ubezpieczyciel" 
-								itemLabel="#{ubezpieczyciel.nazwa}" itemValue="#{ubezpieczyciel}"/>
-							</p:selectOneMenu> </td>
+						<td><p:outputLabel value="Mail"/> </td>
+						<td><p:inputText value="#{zlecenieListaController.obiekt.mail}"/> </td>
 						
-						<td colspan="2"><p:outputLabel value="Alias"/> </td>
-						<td colspan="2"><p:inputText value="#{zlecenieListaController.obiekt.alias}"/> </td>
+						<td><p:outputLabel value="Alias"/> </td>
+						<td><p:inputText value="#{zlecenieListaController.obiekt.alias}"/> </td>
+						<td/>
+						<td/>
 					</tr>
 					<tr>
-						<td colspan="2"><p:outputLabel value="Zleceniodawca"/> </td>
-						<td colspan="2">
+						<td><p:outputLabel value="Zleceniodawca"/> </td>
+						<td>
 							<p:selectOneMenu converter="ZleceniodawcaConverter" value="#{zlecenieListaController.obiekt.zleceniodawca}">
 								<f:selectItem itemLabel="Wybierz" itemValue="#{null}" noSelectionOption="true"/>
 								<f:selectItems value="#{zlecenieListaController.zleceniodawcaLista}" var="zleceniodawca"
 								itemLabel="#{zleceniodawca.nazwa}" itemValue="#{zleceniodawca}"/>
-							</p:selectOneMenu> </td>
-						
-						<td colspan="2"><p:outputLabel value="Mail"/> </td>
-						<td colspan="2"><p:inputText value="#{zlecenieListaController.obiekt.mail}"/> </td>
-						
-						<td colspan="2"><p:outputLabel value="Stawka"/> </td>
-						<td colspan="2"><p:inputText value="#{zlecenieListaController.obiekt.stawka}"/> </td>
+							</p:selectOneMenu> 
+						</td>
+						<td><p:outputLabel value="Ubezpieczyciel"/> </td>
+						<td>
+							<p:selectOneMenu converter="UbezpieczycielConverter" value="#{zlecenieListaController.obiekt.ubezpieczyciel}">
+								<f:selectItem itemLabel="Wybierz" itemValue="#{null}" noSelectionOption="true"/>
+								<f:selectItems value="#{zlecenieListaController.ubezpieczycieleLista}" var="ubezpieczyciel" 
+								itemLabel="#{ubezpieczyciel.nazwa}" itemValue="#{ubezpieczyciel}"/>
+							</p:selectOneMenu> 
+						</td>
+						<td><p:outputLabel value="Stawka"/> </td>
+						<td><p:inputText value="#{zlecenieListaController.obiekt.stawka}"/> </td>
+						<td/>
+						<td/>
 					</tr>
 					<tr>
-						<td colspan="2"><p:outputLabel value="Opis"/> </td>
-						<td colspan="10"><p:inputTextarea autoResize="true" value="#{zlecenieListaController.obiekt.opis}"/>  </td>
+						<td><p:outputLabel value="Opis"/> </td>
+						<td><p:inputTextarea autoResize="true" value="#{zlecenieListaController.obiekt.opis}"/>  </td>
+						<td><p:outputLabel value="Miejscowość"/> </td>
+						<td><p:inputText value="#{zlecenieListaController.obiekt.miejscowosc}"/> </td>
+						<td/>
+						<td/>
+						<td/>
+						<td/>
 					</tr>
 					<tr>
-						<td colspan="12"/>
+						<td colspan="8"/>
 					</tr>
 					<tr>
-						<td colspan="5"></td>
-						<td colspan="2"><p:outputLabel value="Dokumentacja"/> </td>
-						<td colspan="5"></td>
+						<td><p:outputLabel style="font-size:160%;" value="Dokumentacja"/> </td>
+						<td colspan="7"></td>
 					</tr>
 					<tr>
-						<td colspan="12"/>
+						<td colspan="8"/>
 					</tr>
 					<tr>
-						<td colspan="12"/>
+						<td colspan="8"/>
 					</tr>
+				</table>
+				<table style="font-size: 13px;" width="100%" cellpadding="5" cellspacing="5" border="0" >
 					<tr>
-						<td colspan="12">
+						<td colspan="1">
 							<h:commandButton  value="Dodaj pliki" onclick="PF('pliki').show();return false;" />
-							<h:panelGroup id="pliki" layout="block">
+							<h:panelGroup style="text-align:center;" id="pliki" layout="block">
 								<ui:remove>
 									<ul>
 									<ui:repeat value="#{zlecenieListaController.obiekt.dokumentacja}" var="dokumentacja">
@@ -199,6 +214,7 @@
 								</h:panelGrid>	
 							</h:panelGroup>
 						</td>
+						<td colspan="7"/>
 					</tr>		
 				</table>
 				<h:panelGrid columns="2">

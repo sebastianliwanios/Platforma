@@ -1,8 +1,6 @@
 package com.sebastian.platforma.controllers;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -11,30 +9,28 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Pattern;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.print.attribute.standard.Severity;
 
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
-import org.primefaces.model.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.sebastian.platforma.domain.Dokumentacja;
 import com.sebastian.platforma.domain.Ubezpieczyciel;
+import com.sebastian.platforma.domain.WiadomoscMail;
 import com.sebastian.platforma.domain.Zlecenie;
 import com.sebastian.platforma.domain.Zleceniodawca;
+import com.sebastian.platforma.services.CreatingExcelFileService;
+import com.sebastian.platforma.services.IMailService;
 import com.sebastian.platforma.services.IUbezpieczycielService;
 import com.sebastian.platforma.services.IZlecenieService;
 import com.sebastian.platforma.services.IZleceniodawcaService;
+import com.sebastian.platforma.services.MailService;
+import com.sebastian.platforma.services.ZlecenieServiceImpl;
 
 @ManagedBean
 @SessionScoped
@@ -45,10 +41,16 @@ public class ZlecenieListaController extends AbstractListController<Zlecenie, In
 	private static final Logger logger=LoggerFactory.getLogger(ZlecenieListaController.class);
 	private List<StreamedContent> galeria;
 	private StreamedContent image;
+	private CreatingExcelFileService excelService;
 	
 	public List<StreamedContent> getGaleria() {
 		return galeria;
 	}
+	//private Zlecenie zlecenie;
+	
+	@Autowired
+	private IZlecenieService zlecenieImpl;
+
 	// konstruktor musi byc bezargumentowy
 	public ZlecenieListaController() {
 		super(Zlecenie.class, IZlecenieService.class, RESOURCE_BUNDLE_NAME);
@@ -66,13 +68,40 @@ public class ZlecenieListaController extends AbstractListController<Zlecenie, In
 	
 	
 
+	public IZlecenieService getZlecenieImpl() {
+		return zlecenieImpl;
+	}
+	public void setZlecenieImpl(IZlecenieService zlecenieImpl) {
+		this.zlecenieImpl = zlecenieImpl;
+	}
 	@Override
 	public String initEdycja() {
 		
 		super.initEdycja();
-		
 		zaznaczony.setDataModyfikacji(new Date());
+		return null;
+	}
+	
+	public String wygenerujPlikExcel(){
+		logger.debug("Wchodzę do metody generowanieExcela ...");
 		
+		List<Zlecenie> lista = JSFUtility.findService(IZlecenieService.class).znajdzWszystkie();
+		logger.debug("Próbuje wygenerować plik");
+		try {
+			JSFUtility.findService(CreatingExcelFileService.class).generujZestawienie(lista);
+			//JSFUtility.findService(MailService.class).sendEmail();
+			String path = "C:"+File.separator+"Platforma"+File.separator; 
+			String nazwaliku = "Zestawienie.xls";
+			WiadomoscMail wiadomosc=new WiadomoscMail("Zestawienie od ... z platformy", "Testowy emial");
+			wiadomosc.dodajOdbiorce("sebastian.liwanios@gmail.com");
+			wiadomosc.dodajPliki(nazwaliku,path);
+			JSFUtility.findService(IMailService.class).wyslijMail(wiadomosc);
+			
+			logger.debug("Wygenerowano plik");
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		return null;
 	}
@@ -87,9 +116,8 @@ public class ZlecenieListaController extends AbstractListController<Zlecenie, In
 		if (nazwaJuzIstnieje == false) {
 			return nazwaPliku;
 		}
-		
+
 		for (int i=0; ; i++) {
-			
 			String czescNazwa=null;
 			String czescRozszerzenie=null;
 			int indeksKropki=nazwaPliku.lastIndexOf(".");
@@ -188,16 +216,15 @@ public class ZlecenieListaController extends AbstractListController<Zlecenie, In
 	
 	@Override
 	public String remove() {
-		
 		return super.remove();
 	}
+	
 	public StreamedContent getImage() {
 		return image;
 	}
 	
 	public List<Dokumentacja> getImages()
 	{
-		
 		return grupujDokumenty("jpg","png","gif","jpeg","bmp");
 	}
 	
@@ -230,6 +257,5 @@ public class ZlecenieListaController extends AbstractListController<Zlecenie, In
 		
 		return lista;
 	}
-	
-	
+
 }

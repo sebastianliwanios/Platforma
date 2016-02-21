@@ -19,5 +19,9 @@
    <base-name>zlecenie</base-name>
    <var>zlecenieMsg</var>
   </resource-bundle>
+  <resource-bundle>
+   <base-name>kontoMailowe</base-name>
+   <var>kontoMailoweMsg</var>
+  </resource-bundle>
  </application>
 </faces-config>

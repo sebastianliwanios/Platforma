@@ -14,19 +14,22 @@ import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.imageio.ImageIO;
 
-import net.coobird.thumbnailator.Thumbnailator;
 import net.coobird.thumbnailator.Thumbnails;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.sebastian.platforma.dao.IDokumentacjaDAO;
 import com.sebastian.platforma.dao.IZlecenieDAO;
@@ -47,11 +50,6 @@ public class ZlecenieServiceImpl extends AbstractCRUDService<Zlecenie, Integer> 
 	@Override
 	public Zlecenie utworz(Zlecenie zlecenie) throws ServiceException {
 		logger.debug("Utworz zlecenie");
-		//zmienic sciezke na podstawie numer zlecenia itp
-		
-		 // sciezka: C:\Platforma\miesiac+rok\zleceniodawca\nrzlecenia_ubezpieczyciel_alias
-	
-		//zlecRepo.findZlecenieByNumerZleceniaAndZleceniodawca(numerZlecenia, zleceniodawca)
 		
 		if (zlecRepo.findByNumerZlecenia(zlecenie.getNumerZlecenia()).isEmpty()) {
 			logger.debug("Nie odnaleziono tego samego numeru zlecenia");
@@ -313,23 +311,21 @@ public class ZlecenieServiceImpl extends AbstractCRUDService<Zlecenie, Integer> 
 			return dokumentacjaDAO.findOne(id);
 		}
 	
-		
-	/*
-	@Override
-	public void preUtworz() throws ServiceException {
-		throw new ServiceException("zlecenieUnikatowyNumer");
+	@Override	
+	@Transactional(readOnly=true)	
+	public Page<Zlecenie> filtrujZlecenia(PageRequest stronicowanie,Map<String,Object> filtry)
+	{
+		return zlecRepo.findAll(stronicowanie);
 	}
-	*/
 
+	@Override
+	@Transactional(readOnly=true)
+	public List<Zlecenie> znajdzWszystkie() {
+		logger.debug("Wyszukuje listę zleceń...");
+		return super.znajdzWszystkie();
+	}
 	
-
-
-	/*
-	@Override
-	public void preZapisz() throws ServiceException {
-		
-	}
-	*/
+	
 	
 	
 }
