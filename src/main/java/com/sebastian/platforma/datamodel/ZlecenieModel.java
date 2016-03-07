@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort.Direction;
 
 import com.sebastian.platforma.controllers.JSFUtility;
 import com.sebastian.platforma.domain.Zlecenie;
+import com.sebastian.platforma.domain.filters.GenericFilter;
 import com.sebastian.platforma.services.IZlecenieService;
 
 public class ZlecenieModel extends LazyDataModel<Zlecenie> {
@@ -30,13 +31,7 @@ public class ZlecenieModel extends LazyDataModel<Zlecenie> {
 	public List<Zlecenie> load(int first, int pageSize, String sortField,SortOrder sortOrder, Map<String, Object> filters) {
 		
 		logger.debug("first={}, pageSize={},sortField={},sortOrder={} filters={}",first,pageSize,sortField,sortOrder,filters);
-		/*
-		List<Zlecenie> lista= JSFUtility.findService(IZlecenieService.class).znajdzWszystkie();
-		logger.debug("pobrana lista {}",lista.size());
-		setRowCount(lista.size());
-		*/
-		//0-9 9/10 ->0
-		//10-19 19/10 ->1
+		
 		int numerStrona=first/pageSize;
 		
 		PageRequest str=null;
@@ -45,11 +40,21 @@ public class ZlecenieModel extends LazyDataModel<Zlecenie> {
 		else
 		{
 			Direction direction=null;
+			if(sortOrder==SortOrder.ASCENDING)
+				direction=Direction.ASC;
+			else if(sortOrder==SortOrder.DESCENDING)
+				direction=Direction.DESC;
+				
 			
 			str=new PageRequest(numerStrona, pageSize, direction, sortField);
 		}
-		str=new PageRequest(numerStrona, pageSize);
-		Page<Zlecenie> strona= JSFUtility.findService(IZlecenieService.class).filtrujZlecenia(str, filters);
+		
+		GenericFilter<Zlecenie> filter=null;
+		
+		if(!filters.isEmpty())
+			filter=new GenericFilter<Zlecenie>(filters);
+		//str=new PageRequest(numerStrona, pageSize);
+		Page<Zlecenie> strona= JSFUtility.findService(IZlecenieService.class).filtrujZlecenia(str, filter);
 		
 		long liczbaWszytskichWierszy=strona.getTotalElements();
 		setRowCount((int)liczbaWszytskichWierszy);

@@ -35,6 +35,7 @@ import com.sebastian.platforma.dao.IDokumentacjaDAO;
 import com.sebastian.platforma.dao.IZlecenieDAO;
 import com.sebastian.platforma.domain.Dokumentacja;
 import com.sebastian.platforma.domain.Zlecenie;
+import com.sebastian.platforma.domain.filters.GenericFilter;
 
 @Service
 public class ZlecenieServiceImpl extends AbstractCRUDService<Zlecenie, Integer> implements IZlecenieService {
@@ -313,9 +314,12 @@ public class ZlecenieServiceImpl extends AbstractCRUDService<Zlecenie, Integer> 
 	
 	@Override	
 	@Transactional(readOnly=true)	
-	public Page<Zlecenie> filtrujZlecenia(PageRequest stronicowanie,Map<String,Object> filtry)
+	public Page<Zlecenie> filtrujZlecenia(PageRequest stronicowanie,GenericFilter filter)
 	{
-		return zlecRepo.findAll(stronicowanie);
+		if(filter==null)
+			return zlecRepo.findAll(stronicowanie);
+		else
+			return zlecRepo.findAll(filter,stronicowanie);
 	}
 
 	@Override

@@ -3,47 +3,46 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      > 
+      xmlns:p="http://primefaces.org/ui"> 
 
 <h:head></h:head> 
 <body> 
 	<h:form>
 		<p:dataTable style="width:75%; margin:0 auto" id="zlecenieLista" value="#{zleceniaListaTestController.data}" lazy="true"
 		 var="zlecenie" paginator="true"
-                rows="1"
+                rows="25"
                 paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-                rowsPerPageTemplate="1,2,100"
+                rowsPerPageTemplate="25,50,100"
                 paginatorPosition="bottom"
                 >	
 				
 				
 				
-				<p:column headerText="ID"> 
+				<p:column headerText="ID" sortBy="#{zlecenie.id}" filterBy="#{zlecenie.id}"> 
 					<h:outputText value="#{zlecenie.id}" /> 
 				</p:column>
 				
-				<p:column headerText="Numer" sortBy="#{zlecenie.numerZlecenia}" filterBy="#{zlecenie.numerZlecenia}"> 
+				<p:column headerText="Numer" sortBy="#{zlecenie.numerZlecenia}" filterBy="#{zlecenie.numerZlecenia}" sortable="true"> 
 					<h:outputText value="#{zlecenie.numerZlecenia}" /> 
 				</p:column>
 				
-				<p:column headerText="Zleceniodawca" sortBy="#{zlecenie.zleceniodawca.nazwa}" filterBy="#{zlecenie.zleceniodawca.nazwa}"> 
+				<p:column headerText="Zleceniodawca" sortBy="#{zlecenie.zleceniodawca.nazwa}" filterBy="#{zlecenie.zleceniodawca.nazwa}" sortable="true"> 
 					<h:outputText value="#{zlecenie.zleceniodawca.nazwa}" /> 
 				</p:column>
 				
-				<p:column headerText="Ubezpieczyciel">
+				<p:column headerText="Ubezpieczyciel" sortBy="#{zlecenie.ubezpieczyciel.nazwa}" filterBy="#{zlecenie.ubezpieczyciel.nazwa}">
 					<h:outputText value="#{zlecenie.ubezpieczyciel.nazwa}" />
 				</p:column>
 				
-				<p:column headerText="Alias">
+				<p:column headerText="Alias" sortBy="#{zlecenie.alias}" filterBy="#{zlecenie.alias}">
 					<h:outputText value="#{zlecenie.alias}" />
 				</p:column>
 				
-				<p:column headerText="Status">
+				<p:column headerText="Status" sortBy="#{zlecenie.status}" filterBy="#{zlecenie.status}">
 					<h:outputText value="#{zlecenie.status}" />
 				</p:column>
 				
-				<p:column headerText="Stawka">
+				<p:column headerText="Stawka" sortBy="#{zlecenie.stawka}" filterBy="#{zlecenie.stawka}">
 					<h:outputText value="#{zlecenie.stawka}" />
 				</p:column>
 			</p:dataTable>

@@ -21,13 +21,10 @@ public class ZleceniaListaTestController {
 	
 	private LazyDataModel<Zlecenie> data=new ZlecenieModel();
 	
-	@PostConstruct
-	public void init(){
-		logger.debug("init");
-	}
+	
 
 	public LazyDataModel<Zlecenie> getData() {
-		logger.debug("GET ");
+	
 		return data;
 	}
 	

@@ -13,5 +13,6 @@ import com.sebastian.platforma.domain.Zlecenie;
 public interface IZlecenieDAO extends JpaRepository<Zlecenie, Integer>,JpaSpecificationExecutor<Zlecenie> {
 
 	List<Zlecenie> findByNumerZlecenia(String numerZlecenia);
-	Page<Zlecenie> findAll(Pageable page );//PageRequest
+	Page<Zlecenie> findAll(Specification<Zlecenie> filters,Pageable page);//PageRequest
+	Page<Zlecenie> findAll(Pageable page );
 }
